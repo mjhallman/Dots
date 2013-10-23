@@ -21,13 +21,15 @@ public class BoardModel {
         return dots[x][y];
     }
 
+
+
     public void setDot(Dot dot) {
         dots[dot.getX()][dot.getY()] = dot;
     }
 
     public void populateRandomBoard() {
-        for (int i = 0; i <= BOARD_SIZE; i++) {
-            for (int j = 0; i <=BOARD_SIZE; i++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j <BOARD_SIZE; j++) {
                 dots[i][j] = DotFactory.createRandomDot(i, j);
             }
         }

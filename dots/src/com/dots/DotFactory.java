@@ -1,5 +1,8 @@
 package com.dots;
 
+import java.awt.*;
+import java.util.Random;
+
 /**
  * Created with IntelliJ IDEA.
  * User: matthallman
@@ -10,6 +13,31 @@ package com.dots;
 public class DotFactory {
 
     public static Dot createRandomDot(int x, int y) {
-        return new Dot(x, y, DotColor.getRandom());
+
+
+        return new Dot(x, y, getRandomColor());
     }
+
+
+    private static Color getRandomColor() {
+        Random r = new Random();
+
+        int c = r.nextInt(5);
+
+//        YELLOW, GREEN, RED, PURPLE, BLUE,
+
+        if (c == 0) {
+            return Color.YELLOW;
+        } else if (c == 1) {
+            return Color.GREEN;
+        } else if (c == 2) {
+            return Color.RED;
+        } else if (c == 3) {
+            return Color.MAGENTA;
+        } else if (c == 4) {
+            return Color.BLUE;
+        }
+        return null;
+    }
+
 }

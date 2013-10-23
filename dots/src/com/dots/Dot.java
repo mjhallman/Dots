@@ -1,5 +1,7 @@
 package com.dots;
 
+import java.awt.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: matthallman
@@ -9,18 +11,19 @@ package com.dots;
  */
 public class Dot {
 
-    private DotColor color;
+//    private DotColor color;
+    private Color color;
     private int x; // X-coord. [0-5]
     private int y; // Y-coord. [0-5]
 
-    public Dot(int x, int y, DotColor color) {
+    public Dot(int x, int y, Color color) {
         this.x = x;
         this.y = y;
         this.color = color;
     }
 
 
-    public DotColor getColor() {
+    public Color getColor() {
         return color;
     }
 
