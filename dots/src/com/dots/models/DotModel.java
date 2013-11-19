@@ -1,4 +1,4 @@
-package com.dots;
+package com.dots.models;
 
 import java.awt.*;
 
@@ -9,14 +9,14 @@ import java.awt.*;
  * Time: 2:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Dot {
+public class DotModel {
 
 //    private DotColor color;
     private Color color;
     private int x; // X-coord. [0-5]
     private int y; // Y-coord. [0-5]
 
-    public Dot(int x, int y, Color color) {
+    public DotModel(int x, int y, Color color) {
         this.x = x;
         this.y = y;
         this.color = color;

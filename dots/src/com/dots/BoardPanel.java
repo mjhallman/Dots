@@ -1,6 +1,9 @@
 package com.dots;
 
 
+import com.dots.models.BoardModel;
+import com.dots.models.DotModel;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -11,7 +14,7 @@ import java.awt.*;
  * Time: 2:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Board extends JPanel {
+public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
 
@@ -28,11 +31,6 @@ public class Board extends JPanel {
         boardModel = new BoardModel();
         boardModel.populateRandomBoard();
 
-//        Dot d = boardModel.getDot(0, 1);
-
-
-
-
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -41,7 +39,7 @@ public class Board extends JPanel {
 
         for (int i = 0; i < BoardModel.BOARD_SIZE; i++) {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
-                Dot d = boardModel.getDot(i, j);
+                DotModel d = boardModel.getDot(i, j);
                 g2.setColor(d.getColor());
                 g2.fillOval(X_OFFSET + d.getX()+ (i * 40) , Y_OFFSET + d.getY()+ (j * 40), 30, 30);
             }

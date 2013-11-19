@@ -12,7 +12,7 @@ import javax.swing.*;
 public class Game extends JFrame {
 
     public Game() {
-        add(new Board());
+        add(new BoardPanel());
 
 
         setSize(500, 500);

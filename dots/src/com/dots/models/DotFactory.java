@@ -1,4 +1,6 @@
-package com.dots;
+package com.dots.models;
+
+import com.dots.models.DotModel;
 
 import java.awt.*;
 import java.util.Random;
@@ -12,10 +14,10 @@ import java.util.Random;
  */
 public class DotFactory {
 
-    public static Dot createRandomDot(int x, int y) {
+    public static DotModel createRandomDot(int x, int y) {
 
 
-        return new Dot(x, y, getRandomColor());
+        return new DotModel(x, y, getRandomColor());
     }
 
 

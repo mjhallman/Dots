@@ -1,4 +1,6 @@
-package com.dots;
+package com.dots.models;
+
+import com.dots.models.DotFactory;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,26 +13,26 @@ public class BoardModel {
 
     public static final int BOARD_SIZE = 5;
 
-    Dot[][] dots;
+    DotModel[][] dotModels;
 
     public BoardModel() {
-        this.dots = new Dot[BOARD_SIZE][BOARD_SIZE];
+        this.dotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
     }
 
-    public Dot getDot(int x, int y) {
-        return dots[x][y];
+    public DotModel getDot(int x, int y) {
+        return dotModels[x][y];
     }
 
 
 
-    public void setDot(Dot dot) {
-        dots[dot.getX()][dot.getY()] = dot;
+    public void setDot(DotModel dotModel) {
+        dotModels[dotModel.getX()][dotModel.getY()] = dotModel;
     }
 
     public void populateRandomBoard() {
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j <BOARD_SIZE; j++) {
-                dots[i][j] = DotFactory.createRandomDot(i, j);
+                dotModels[i][j] = DotFactory.createRandomDot(i, j);
             }
         }
     }
