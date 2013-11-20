@@ -1,6 +1,7 @@
 package com.dots.models;
 
-import com.dots.models.DotFactory;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,9 +15,26 @@ public class BoardModel {
     public static final int BOARD_SIZE = 5;
 
     DotModel[][] dotModels;
+    SelectionModel selectionModel;
 
     public BoardModel() {
         this.dotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
+
+
+        // set this selection model. (for testing)
+        this.selectionModel = new SelectionModel(this, new ArrayList<DotModel>());
+        this.selectionModel.setColor(Color.BLUE);
+
+
+
+        populateRandomBoard();
+        //TODO : set selection model somewher else. Where? ??
+        this.selectionModel.getSelectedDots().add(getDot(0,0));
+        this.selectionModel.getSelectedDots().add(getDot(1, 0));
+        this.selectionModel.getSelectedDots().add(getDot(1,1));
+        this.selectionModel.getSelectedDots().add(getDot(2,1));
+
+
     }
 
     public DotModel getDot(int x, int y) {
@@ -35,5 +53,13 @@ public class BoardModel {
                 dotModels[i][j] = DotFactory.createRandomDot(i, j);
             }
         }
+    }
+
+    public SelectionModel getSelectionModel() {
+        return selectionModel;
+    }
+
+    public void setSelectionModel(SelectionModel selectionModel) {
+        this.selectionModel = selectionModel;
     }
 }

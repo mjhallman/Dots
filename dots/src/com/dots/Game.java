@@ -15,6 +15,7 @@ public class Game extends JFrame {
         add(new BoardPanel());
 
 
+
         setSize(500, 500);
         setTitle("Dots");
         setVisible(true);

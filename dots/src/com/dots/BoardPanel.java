@@ -3,6 +3,7 @@ package com.dots;
 
 import com.dots.models.BoardModel;
 import com.dots.models.DotModel;
+import com.dots.models.SelectionModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,30 +19,47 @@ public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
 
+    int X_OFFSET = 20;
+    int Y_OFFSET = 20;
 
 
-    public void setBoardModel(BoardModel boardModel) {
-        this.boardModel = boardModel;
-        repaint();
-    }
+
+//    public void setBoardModel(BoardModel boardModel) {
+//        this.boardModel = boardModel;
+//        repaint();
+//    }
 
     public void paint(Graphics g) {
         super.paint(g);
 
         boardModel = new BoardModel();
-        boardModel.populateRandomBoard();
+//        boardModel.populateRandomBoard();
+
 
 
         Graphics2D g2 = (Graphics2D) g;
 
-        int X_OFFSET = 20;
-        int Y_OFFSET = 20;
+
 
         for (int i = 0; i < BoardModel.BOARD_SIZE; i++) {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
                 DotModel d = boardModel.getDot(i, j);
                 g2.setColor(d.getColor());
-                g2.fillOval(X_OFFSET + d.getX()+ (i * 40) , Y_OFFSET + d.getY()+ (j * 40), 30, 30);
+                g2.fillOval(X_OFFSET + (d.getX() * 40) , Y_OFFSET + (d.getY() * 40), 30, 30);
+            }
+        }
+
+        SelectionModel selectionModel = boardModel.getSelectionModel();
+
+
+        // Draw the selection:
+        if (selectionModel != null) {
+            g2.setColor(selectionModel.getColor());
+            g2.setStroke(new BasicStroke(6));
+            for (int i = 0; i < selectionModel.getSelectedDots().size() - 1; i++) {
+                DotModel thisDot = selectionModel.getSelectedDots().get(i);
+                DotModel nextDot = selectionModel.getSelectedDots().get(i+1);
+                g2.drawLine(15 + X_OFFSET + (thisDot.getX() * 40), 15 +  Y_OFFSET + (thisDot.getY() * 40), 15 + X_OFFSET + (nextDot.getX() * 40), 15 + Y_OFFSET + (nextDot.getY() * 40));
             }
         }
 
@@ -79,6 +97,36 @@ public class BoardPanel extends JPanel {
 //            at.rotate(Math.toRadians(deg));
 //            g2.draw(at.createTransformedShape(e));
 //        }
+    }
+
+//    private int getBoardPosition(DotModel dotModel) {
+//        return new Posn(X_OFFSET + dotModel.getX())
+//    }
+
+    private class Posn {
+        int x;
+        int y;
+
+        private Posn(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        private int getX() {
+            return x;
+        }
+
+        private void setX(int x) {
+            this.x = x;
+        }
+
+        private int getY() {
+            return y;
+        }
+
+        private void setY(int y) {
+            this.y = y;
+        }
     }
 
 
