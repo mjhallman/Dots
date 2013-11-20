@@ -103,31 +103,38 @@ public class BoardPanel extends JPanel {
 //        return new Posn(X_OFFSET + dotModel.getX())
 //    }
 
-    private class Posn {
-        int x;
-        int y;
+//    private class Posn {
+//        int x;
+//        int y;
+//
+//        private Posn(int x, int y) {
+//            this.x = x;
+//            this.y = y;
+//        }
+//
+//        private int getX() {
+//            return x;
+//        }
+//
+//        private void setX(int x) {
+//            this.x = x;
+//        }
+//
+//        private int getY() {
+//            return y;
+//        }
+//
+//        private void setY(int y) {
+//            this.y = y;
+//        }
+//    }
 
-        private Posn(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
 
-        private int getX() {
-            return x;
-        }
-
-        private void setX(int x) {
-            this.x = x;
-        }
-
-        private int getY() {
-            return y;
-        }
-
-        private void setY(int y) {
-            this.y = y;
-        }
+    public BoardModel getBoardModel() {
+        return boardModel;
     }
 
-
+    public void setBoardModel(BoardModel boardModel) {
+        this.boardModel = boardModel;
+    }
 }

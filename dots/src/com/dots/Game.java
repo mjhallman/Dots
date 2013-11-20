@@ -12,7 +12,10 @@ import javax.swing.*;
 public class Game extends JFrame {
 
     public Game() {
-        add(new BoardPanel());
+        BoardPanel bp = new BoardPanel();
+        add(bp);
+
+//        add(new Button("a label"));
 
 
 
