@@ -17,7 +17,7 @@ import java.awt.*;
 public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
-
+    JButton resetButton = new JButton("Reset");
 
 
     public void setBoardModel(BoardModel boardModel) {
@@ -30,7 +30,6 @@ public class BoardPanel extends JPanel {
 
         boardModel = new BoardModel();
         boardModel.populateRandomBoard();
-
 
         Graphics2D g2 = (Graphics2D) g;
 
