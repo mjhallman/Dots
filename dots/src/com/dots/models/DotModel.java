@@ -54,7 +54,7 @@ public class DotModel {
         else if(currentColor==blue)
             return yellow;
         else
-            return Color.black;
+            return Color.white;
     }
 
     public Color selectColor(Color currentColor){
@@ -79,7 +79,7 @@ public class DotModel {
         else if(currentColor==selectBlue)
             return Color.BLUE;
         else
-            return Color.black;
+            return Color.white;
     }
 
     public int getX() {

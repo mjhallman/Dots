@@ -2,6 +2,7 @@ package com.dots;
 
 import com.dots.models.BoardModel;
 import com.dots.models.DotModel;
+import com.dots.models.SelectionModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,13 +23,20 @@ public class Game extends JFrame implements ActionListener, MouseListener{
 
     JPanel buttonPanel;
     BoardPanel boardPanel;
+    SelectionModel selectionModel;
 
     JButton resetButton;
     JButton changeButton;
     JButton runButton;
 
+    JLabel compModeLabel;
+    JLabel runModeLabel;
+
     private int editColor = 0;
+    private int compMode = 0;
     private int xval, yval;
+    private int selectedColorFlag = 0;
+    private Color selectionColor;
 
     MouseListener mouseListener;
 
@@ -45,6 +53,8 @@ public class Game extends JFrame implements ActionListener, MouseListener{
         resetButton = new JButton("Reset");    //create buttons
         runButton = new JButton("Run");
         changeButton = new JButton("Change");
+
+        compModeLabel = new JLabel("User is playing");
 
         buttonPanel.add(resetButton);   //add buttons to panel
         buttonPanel.add(runButton);
@@ -69,15 +79,19 @@ public class Game extends JFrame implements ActionListener, MouseListener{
 
         if (event.getSource() == resetButton) {
             boardPanel.setBoardModel(new BoardModel());
+            selectedColorFlag = 0;
             repaint();
         }
         if (event.getSource() == changeButton) {
             if(editColor == 0){
                 editColor = 1;          //enableColorChange();
-            }
-            else editColor = 0;         //disableColorChange();
+            } else editColor = 0;         //disableColorChange();
         }
         if (event.getSource() == runButton) {
+            if(compMode == 0){
+                compMode = 1;            //
+            }else compMode = 0;
+
             System.out.println("run"); }
     }
 
@@ -93,11 +107,28 @@ public class Game extends JFrame implements ActionListener, MouseListener{
             currentBoard.nextColor(xval,yval,clickedDot);
             repaint();
         } else {
-            //add dots to selectedDots array
-            currentBoard.selectDot(xval,yval); //the dot //need to check for selection to allow deselecting
-            currentBoard.selectColor(xval,yval,clickedDot);
-            repaint();
         }
+
+        if(compMode == 0){
+            if(selectedColorFlag == 0) {           //if no selection color has been specified
+                selectionColor = clickedDot.getColor();         //set the selection color
+                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
+                selectedColorFlag = 1;
+                //todo add dot to arrayList
+            } else {
+                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
+                    System.out.println("same color");
+                    //check if the dot is a possible move
+                    //add dot to selected dots
+
+                }
+            }
+            repaint();
+        } else {
+
+            //runs the program to decide on a move
+        }
+
 
 
         //System.out.println("(" + (e.getX() - 20) / 40 + ", " + (e.getY() - 20) / 40 + ")") ;

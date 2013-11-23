@@ -36,11 +36,11 @@ public class BoardModel {
 //        this.selectionModel.getSelectedDots().add(getDot(1, 0));
 //        this.selectionModel.getSelectedDots().add(getDot(1,1));
 //        this.selectionModel.getSelectedDots().add(getDot(2,1));
-        ArrayList<SelectionModel> possibleSelections = getPossibleSelectionModelsForPosition(0,0);
+       /* ArrayList<SelectionModel> possibleSelections = getPossibleSelectionModelsForPosition(0,0);
         if (possibleSelections != null && possibleSelections.size() > 0) {
             selectionModel = possibleSelections.get(0);
             selectionModel.setColor(possibleSelections.get(0).getSelectedDots().get(0).getColor());
-        }
+        }*/
 
 
 
@@ -88,10 +88,7 @@ public class BoardModel {
     public void setSelectionModel(SelectionModel selectionModel) {
         this.selectionModel = selectionModel;
     }
-
-
-    /**
-     *
+    /*
      * @param x
      * @param y
      * @return An ArrayList of all possible selections including the given position.

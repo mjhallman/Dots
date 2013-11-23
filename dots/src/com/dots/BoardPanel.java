@@ -22,8 +22,6 @@ public class BoardPanel extends JPanel {
     int X_OFFSET = 20;
     int Y_OFFSET = 20;
 
-
-
 //    public void setBoardModel(BoardModel boardModel) {
 //        this.boardModel = boardModel;
 //        repaint();
@@ -35,8 +33,6 @@ public class BoardPanel extends JPanel {
 
     public void paint(Graphics g) {
         super.paint(g);
-
-        boardModel = new BoardModel();
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -62,8 +58,6 @@ public class BoardPanel extends JPanel {
             }
         }
     }
-
-}
 
 //        g2.drawOval(10, 10, 50, 50);
 //        g2.draw((Shape) circle);
