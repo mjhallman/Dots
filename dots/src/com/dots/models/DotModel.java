@@ -1,6 +1,8 @@
 package com.dots.models;
 
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -22,9 +24,12 @@ public class DotModel {
         this.color = color;
     }
 
-
     public Color getColor() {
         return color;
+    }
+
+    public void setColor(Color color) {
+        this.color= color;
     }
 
     public int getX() {
@@ -34,4 +39,5 @@ public class DotModel {
     public int getY() {
         return y;
     }
+
 }

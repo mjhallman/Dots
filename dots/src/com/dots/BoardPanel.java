@@ -6,6 +6,8 @@ import com.dots.models.DotModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,8 +19,6 @@ import java.awt.*;
 public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
-    JButton resetButton = new JButton("Reset");
-
 
     public void setBoardModel(BoardModel boardModel) {
         this.boardModel = boardModel;
@@ -43,16 +43,12 @@ public class BoardPanel extends JPanel {
                 g2.fillOval(X_OFFSET + d.getX()+ (i * 40) , Y_OFFSET + d.getY()+ (j * 40), 30, 30);
             }
         }
+    }
 
-
-
-
+}
 
 //        g2.drawOval(10, 10, 50, 50);
 //        g2.draw((Shape) circle);
-
-
-
 
 //        RenderingHints rh =
 //                new RenderingHints(RenderingHints.KEY_ANTIALIASING,
@@ -78,7 +74,3 @@ public class BoardPanel extends JPanel {
 //            at.rotate(Math.toRadians(deg));
 //            g2.draw(at.createTransformedShape(e));
 //        }
-    }
-
-
-}
