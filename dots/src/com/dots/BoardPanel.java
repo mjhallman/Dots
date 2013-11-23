@@ -28,18 +28,17 @@ public class BoardPanel extends JPanel {
 //        this.boardModel = boardModel;
 //        repaint();
 //    }
+    public BoardPanel(){
+        boardModel = new BoardModel();
+        boardModel.populateRandomBoard();
+    }
 
     public void paint(Graphics g) {
         super.paint(g);
 
         boardModel = new BoardModel();
-//        boardModel.populateRandomBoard();
-
-
 
         Graphics2D g2 = (Graphics2D) g;
-
-
 
         for (int i = 0; i < BoardModel.BOARD_SIZE; i++) {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
@@ -62,16 +61,12 @@ public class BoardPanel extends JPanel {
                 g2.drawLine(15 + X_OFFSET + (thisDot.getX() * 40), 15 +  Y_OFFSET + (thisDot.getY() * 40), 15 + X_OFFSET + (nextDot.getX() * 40), 15 + Y_OFFSET + (nextDot.getY() * 40));
             }
         }
+    }
 
-
-
-
+}
 
 //        g2.drawOval(10, 10, 50, 50);
 //        g2.draw((Shape) circle);
-
-
-
 
 //        RenderingHints rh =
 //                new RenderingHints(RenderingHints.KEY_ANTIALIASING,
@@ -96,8 +91,7 @@ public class BoardPanel extends JPanel {
 //                    AffineTransform.getTranslateInstance(w / 2, h / 2);
 //            at.rotate(Math.toRadians(deg));
 //            g2.draw(at.createTransformedShape(e));
-//        }
-    }
+
 
 //    private int getBoardPosition(DotModel dotModel) {
 //        return new Posn(X_OFFSET + dotModel.getX())
@@ -136,5 +130,6 @@ public class BoardPanel extends JPanel {
 
     public void setBoardModel(BoardModel boardModel) {
         this.boardModel = boardModel;
+        repaint();
     }
 }

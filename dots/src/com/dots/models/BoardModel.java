@@ -2,6 +2,8 @@ package com.dots.models;
 
 import java.util.ArrayList;
 
+import java.awt.*;
+
 /**
  * Created with IntelliJ IDEA.
  * User: matthallman
@@ -11,7 +13,7 @@ import java.util.ArrayList;
  */
 public class BoardModel {
 
-    public static final int BOARD_SIZE = 5;
+    public static final int BOARD_SIZE = 6;
 
     DotModel[][] dotModels;
     SelectionModel selectionModel;
@@ -60,6 +62,23 @@ public class BoardModel {
                 dotModels[i][j] = DotFactory.createRandomDot(i, j);
             }
         }
+    }
+
+    public void nextColor(int x, int y, DotModel clickedDot){
+        Color dotColor = clickedDot.getColor();
+        Color nextColor = clickedDot.nextColor(dotColor);
+        clickedDot.setColor(nextColor);
+    }
+
+    public void selectColor(int x, int y,  DotModel clickedDot){
+        Color dotColor = clickedDot.getColor();
+        Color selectColor = clickedDot.selectColor(dotColor);
+        clickedDot.setColor(selectColor);
+    }
+
+    public void selectDot(int xval, int yval) {
+        //To change body of created methods use File | Settings | File Templates.
+        // Make the dot "selected"
     }
 
     public SelectionModel getSelectionModel() {
