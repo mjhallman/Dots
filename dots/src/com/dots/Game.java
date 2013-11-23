@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
 
-
 /**
  * Created with IntelliJ IDEA.
  * User: matthallman
@@ -133,5 +132,4 @@ public class Game extends JFrame implements ActionListener, MouseListener{
     public static void main(String[] args) {
         new Game();
     }
-
 }
