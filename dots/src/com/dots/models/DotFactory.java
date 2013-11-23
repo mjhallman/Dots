@@ -1,7 +1,5 @@
 package com.dots.models;
 
-import com.dots.models.DotModel;
-
 import java.awt.*;
 import java.util.Random;
 
@@ -18,25 +16,6 @@ public class DotFactory {
     public static DotModel createRandomDot(int x, int y) {
 
         return new DotModel(x, y, getRandomColor());
-    }
-
-    private DotModel changeColor(DotModel dot) {
-        if(dot.getColor()==Color.YELLOW){
-            dot.setColor(Color.GREEN);
-        }
-        if(dot.getColor()==Color.GREEN){
-            dot.setColor(Color.RED);
-        }
-        if(dot.getColor()==Color.RED){
-            dot.setColor(Color.MAGENTA);
-        }
-        if(dot.getColor()==Color.MAGENTA){
-            dot.setColor(Color.BLUE);
-        }
-        if(dot.getColor()==Color.BLUE){
-            dot.setColor(Color.YELLOW);
-        }
-        return dot;
     }
 
     private static Color getRandomColor() {

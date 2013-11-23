@@ -20,16 +20,23 @@ public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
 
+    public BoardPanel(){
+        boardModel = new BoardModel();
+        boardModel.populateRandomBoard();
+
+    }
+
     public void setBoardModel(BoardModel boardModel) {
         this.boardModel = boardModel;
         repaint();
     }
 
+    public BoardModel getBoardModel(){
+        return boardModel;
+    }
+
     public void paint(Graphics g) {
         super.paint(g);
-
-        boardModel = new BoardModel();
-        boardModel.populateRandomBoard();
 
         Graphics2D g2 = (Graphics2D) g;
 
@@ -40,7 +47,7 @@ public class BoardPanel extends JPanel {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
                 DotModel d = boardModel.getDot(i, j);
                 g2.setColor(d.getColor());
-                g2.fillOval(X_OFFSET + d.getX()+ (i * 40) , Y_OFFSET + d.getY()+ (j * 40), 30, 30);
+                g2.fillOval(X_OFFSET + d.getX() +(i * 40) , Y_OFFSET+ d.getY() + (j * 40), 30, 30);
             }
         }
     }
