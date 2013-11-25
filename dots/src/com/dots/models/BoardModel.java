@@ -21,15 +21,11 @@ public class BoardModel {
     public BoardModel() {
         this.dotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
 
-
         // set this selection model. (for testing)
         this.selectionModel = new SelectionModel(this, new ArrayList<DotModel>());
 //        this.selectionModel.setColor(Color.BLUE);
 
-
-
         populateRandomBoard();
-
 
         //TODO : set selection model somewher else. Where?  Game manager class??
 //        this.selectionModel.getSelectedDots().add(getDot(0,0));
@@ -41,16 +37,11 @@ public class BoardModel {
             selectionModel = possibleSelections.get(0);
             selectionModel.setColor(possibleSelections.get(0).getSelectedDots().get(0).getColor());
         }*/
-
-
-
     }
 
     public DotModel getDot(int x, int y) {
         return dotModels[x][y];
     }
-
-
 
     public void setDot(DotModel dotModel) {
         dotModels[dotModel.getX()][dotModel.getY()] = dotModel;

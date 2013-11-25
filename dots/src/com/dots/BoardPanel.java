@@ -18,14 +18,11 @@ import java.awt.*;
 public class BoardPanel extends JPanel {
 
     private BoardModel boardModel;
+    private Color selectionColor;
 
     int X_OFFSET = 20;
     int Y_OFFSET = 20;
 
-//    public void setBoardModel(BoardModel boardModel) {
-//        this.boardModel = boardModel;
-//        repaint();
-//    }
     public BoardPanel(){
         boardModel = new BoardModel();
         boardModel.populateRandomBoard();
@@ -58,7 +55,6 @@ public class BoardPanel extends JPanel {
             }
         }
     }
-
 //        g2.drawOval(10, 10, 50, 50);
 //        g2.draw((Shape) circle);
 
@@ -85,7 +81,7 @@ public class BoardPanel extends JPanel {
 //                    AffineTransform.getTranslateInstance(w / 2, h / 2);
 //            at.rotate(Math.toRadians(deg));
 //            g2.draw(at.createTransformedShape(e));
-
+//        }
 
 //    private int getBoardPosition(DotModel dotModel) {
 //        return new Posn(X_OFFSET + dotModel.getX())

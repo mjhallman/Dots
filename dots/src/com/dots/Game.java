@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,6 +35,7 @@ public class Game extends JFrame implements ActionListener, MouseListener{
 
     private int editColor = 0;
     private int compMode = 0;
+
     private int xval, yval;
     private int selectedColorFlag = 0;
     private Color selectionColor;
@@ -78,7 +80,10 @@ public class Game extends JFrame implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent event) {
 
         if (event.getSource() == resetButton) {
-            boardPanel.setBoardModel(new BoardModel());
+            BoardModel boardModel = new BoardModel();
+            ArrayList<DotModel> selectedDots = new ArrayList<DotModel>();
+            boardPanel.setBoardModel(boardModel);
+            boardModel.setSelectionModel(new SelectionModel(boardModel,selectedDots));
             selectedColorFlag = 0;
             repaint();
         }
@@ -107,31 +112,43 @@ public class Game extends JFrame implements ActionListener, MouseListener{
             currentBoard.nextColor(xval,yval,clickedDot);
             repaint();
         } else {
-        }
 
-        if(compMode == 0){
-            if(selectedColorFlag == 0) {           //if no selection color has been specified
-                selectionColor = clickedDot.getColor();         //set the selection color
-                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
-                selectedColorFlag = 1;
-                //todo add dot to arrayList
-            } else {
-                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
-                    System.out.println("same color");
-                    //check if the dot is a possible move
-                    //add dot to selected dots
+            if(compMode == 0){
+                if(selectedColorFlag == 0) {           //if no selection color has been specified
+                    selectionColor = clickedDot.getColor();         //set the selection color
+                    currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
+                    selectedColorFlag = 1;                          //set Color selected flag
+                    ArrayList<DotModel> selection = new ArrayList<DotModel>();
+                    selection.add(clickedDot);
+                    System.out.println("selection= " + selection.get(0));
+                    //selectionModel.setSelectedDots(selection);
+                    //todo add dot to arrayList
+                } else {
+                    Color selectedColor = clickedDot.selectColor(selectionColor);
+                    Color dotColor = clickedDot.getColor();
 
+                    if(selectedColor == dotColor) {             //if dot already selected
+                        clickedDot.setColor(selectionColor);        //change dots color back
+                        //ArrayList<DotModel> selection = selectionModel.getSelectedDots(); //remove from selected dots
+                        //selection.remove(0);
+                        //selectionModel.setSelectedDots(selection);
+                        //if(selectionModel.getValue()==0) {     //if the selectionModel is empty
+                        //    selectedColorFlag = 0;                  //reset color selected flag
+                        //}
+                    } else {
+                        if(selectionColor == dotColor) { //if clicked dot is the correct color
+                            clickedDot.setColor(clickedDot.selectColor(dotColor));  //change to selected color
+                        //check if the dot is a possible move
+                        //add dot to selected dots
+                        }
+                    }
                 }
-            }
-            repaint();
-        } else {
+                repaint();
+            } else {
 
             //runs the program to decide on a move
+            }
         }
-
-
-
-        //System.out.println("(" + (e.getX() - 20) / 40 + ", " + (e.getY() - 20) / 40 + ")") ;
     }
 
     @Override

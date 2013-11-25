@@ -11,7 +11,6 @@ import java.awt.*;
  */
 public class DotModel {
 
-//    private DotColor color;
     private Color color;
     private int x; // X-coord. [0-5]
     private int y; // Y-coord. [0-5]
