@@ -3,7 +3,6 @@ package com.dots.models;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 
 /**
  * Created with IntelliJ IDEA.
@@ -92,21 +91,21 @@ public class BoardModel {
         }
 
         System.out.println("Found: " + possibleSelections.size() + " paris.");
-        for (SelectionModel selModel : possibleSelections) {
-            System.out.println(selModel);
-        }
+//        for (SelectionModel selModel : possibleSelections) {
+//            System.out.println(selModel);
+//        }
 
 
         // Display a ranodm pair: (just for testing)
-        int i = new Random().nextInt(possibleSelections.size());
-        int j = 0;
-        for (SelectionModel selModel : possibleSelections) {
-            if (i == j) {
-                setSelectionModel(selModel);
-                break;
-            }
-            j++;
-        }
+//        int i = new Random().nextInt(possibleSelections.size());
+//        int j = 0;
+//        for (SelectionModel selModel : possibleSelections) {
+//            if (i == j) {
+//                setSelectionModel(selModel);
+//                break;
+//            }
+//            j++;
+//        }
 
 
         int previousSelectionsSize = 0;
@@ -140,10 +139,8 @@ public class BoardModel {
                         }
                     }
                 }
-            }
 
-            // Look forwards (at last dot in each selection)
-            for (SelectionModel selModel : selectionsToTest) {
+                // Look forwards (at last dot in each selection)
                 for (DotModel dot : getSurroundingDotsWithSameColor(selModel.getLastDot())) {
                     if (!dot.equals(selModel.getSelectedDots().get(selModel.getSelectedDots().size()-2))) {
                         ArrayList<DotModel> dots = new ArrayList<DotModel>();
@@ -156,13 +153,18 @@ public class BoardModel {
                         }
                     }
                 }
+
             }
+
+
 
             possibleSelections.addAll(foundThisRound);
             selectionsToTest.clear();
             selectionsToTest.addAll(foundThisRound);
 
         }
+
+        System.out.println("Found all possible selections: " + possibleSelections.size());
 
 
 
