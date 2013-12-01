@@ -99,6 +99,8 @@ public class Game extends JFrame implements ActionListener, MouseListener{
 
             boardPanel.getBoardModel().updateSelection();
 
+            repaint();
+
 
 
 //            System.out.println("run");

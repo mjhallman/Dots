@@ -20,6 +20,8 @@ public class SelectionModel {
     public SelectionModel(BoardModel boardModel, ArrayList<DotModel> selectedDots) {
         this.boardModel = boardModel;
         this.selectedDots = selectedDots;
+        if (selectedDots.size() > 0)
+            this.color = selectedDots.get(0).getColor();
         value = selectedDots.size();
     }
 
@@ -49,6 +51,25 @@ public class SelectionModel {
 
     public Color getColor() {
         return color;
+    }
+
+
+    /**
+     * @return The first dot in this selection.
+     */
+    public DotModel getFirstDot() {
+        if (selectedDots.size() > 0)
+            return selectedDots.get(0);
+        return null;
+    }
+
+    /**
+     * @return The last dot contained in this selection.
+     */
+    public DotModel getLastDot() {
+        if (selectedDots.size() > 0)
+            return selectedDots.get(selectedDots.size()-1);
+        return null;
     }
 
     @Override
