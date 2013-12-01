@@ -42,9 +42,9 @@ public class Game extends JFrame implements ActionListener, MouseListener{
 
     public Game() {
 
-        setSize(500, 500);
+        setSize(600, 500);
         setTitle("Dots");
-        setVisible(true);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         buttonPanel = new JPanel();     //create panels
@@ -73,6 +73,9 @@ public class Game extends JFrame implements ActionListener, MouseListener{
         buttonPanel.add(runButton);
 
         boardPanel.addMouseListener(this);   //add mouse listener
+
+
+        setVisible(true);
     }
 
     public void actionPerformed(ActionEvent event) {
@@ -88,11 +91,18 @@ public class Game extends JFrame implements ActionListener, MouseListener{
             } else editColor = 0;         //disableColorChange();
         }
         if (event.getSource() == runButton) {
-            if(compMode == 0){
-                compMode = 1;            //
-            }else compMode = 0;
+            if(compMode == 0)
+                compMode = 1;
+            else
+                compMode = 0;
 
-            System.out.println("run"); }
+
+            boardPanel.getBoardModel().updateSelection();
+
+
+
+//            System.out.println("run");
+        }
     }
 
     @Override
@@ -103,31 +113,31 @@ public class Game extends JFrame implements ActionListener, MouseListener{
         BoardModel currentBoard = boardPanel.getBoardModel();
         DotModel clickedDot = currentBoard.getDot(xval,yval);
 
-        if(editColor == 1){
+//        if(editColor == 1){
             currentBoard.nextColor(xval,yval,clickedDot);
             repaint();
-        } else {
-        }
+//        } else {
+//        }
 
-        if(compMode == 0){
-            if(selectedColorFlag == 0) {           //if no selection color has been specified
-                selectionColor = clickedDot.getColor();         //set the selection color
-                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
-                selectedColorFlag = 1;
-                //todo add dot to arrayList
-            } else {
-                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
-                    System.out.println("same color");
-                    //check if the dot is a possible move
-                    //add dot to selected dots
-
-                }
-            }
-            repaint();
-        } else {
-
-            //runs the program to decide on a move
-        }
+//        if(compMode == 0){
+//            if(selectedColorFlag == 0) {           //if no selection color has been specified
+//                selectionColor = clickedDot.getColor();         //set the selection color
+//                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
+//                selectedColorFlag = 1;
+//                //todo add dot to arrayList
+//            } else {
+//                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
+//                    System.out.println("same color");
+//                    //check if the dot is a possible move
+//                    //add dot to selected dots
+//
+//                }
+//            }
+//            repaint();
+//        } else {
+//
+//            //runs the program to decide on a move
+//        }
 
 
 

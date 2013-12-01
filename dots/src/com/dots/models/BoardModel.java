@@ -1,8 +1,8 @@
 package com.dots.models;
 
-import java.util.ArrayList;
-
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -26,24 +26,7 @@ public class BoardModel {
         this.selectionModel = new SelectionModel(this, new ArrayList<DotModel>());
 //        this.selectionModel.setColor(Color.BLUE);
 
-
-
         populateRandomBoard();
-
-
-        //TODO : set selection model somewher else. Where?  Game manager class??
-//        this.selectionModel.getSelectedDots().add(getDot(0,0));
-//        this.selectionModel.getSelectedDots().add(getDot(1, 0));
-//        this.selectionModel.getSelectedDots().add(getDot(1,1));
-//        this.selectionModel.getSelectedDots().add(getDot(2,1));
-       /* ArrayList<SelectionModel> possibleSelections = getPossibleSelectionModelsForPosition(0,0);
-        if (possibleSelections != null && possibleSelections.size() > 0) {
-            selectionModel = possibleSelections.get(0);
-            selectionModel.setColor(possibleSelections.get(0).getSelectedDots().get(0).getColor());
-        }*/
-
-
-
     }
 
     public DotModel getDot(int x, int y) {
@@ -88,6 +71,36 @@ public class BoardModel {
     public void setSelectionModel(SelectionModel selectionModel) {
         this.selectionModel = selectionModel;
     }
+
+
+    /** Updates this board's SelectionModel to be the best move to take.
+     *
+     */
+    public void updateSelection() {
+
+        HashSet<SelectionModel> possibleSelections = new HashSet<SelectionModel>();
+
+        // Find all pairs:
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                for (SelectionModel selModel : getPossibleSelectionModelsForPosition(i, j)) {
+                    if (!possibleSelections.contains(selModel))
+                        possibleSelections.add(selModel);
+                }
+            }
+        }
+
+        System.out.println("Found: " + possibleSelections.size() + " paris.");
+        for (SelectionModel selModel : possibleSelections) {
+            System.out.println(selModel);
+        }
+
+
+
+
+    }
+
+
     /*
      * @param x
      * @param y
@@ -104,7 +117,7 @@ public class BoardModel {
             selectionModels.add(newSelection);
             return selectionModels;
         }
-        return null;
+        return new ArrayList<SelectionModel>();
     }
 
     private ArrayList<DotModel> getSurroundingDotsWithSameColor(DotModel d) {

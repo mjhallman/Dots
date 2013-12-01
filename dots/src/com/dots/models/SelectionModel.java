@@ -50,4 +50,32 @@ public class SelectionModel {
     public Color getColor() {
         return color;
     }
+
+    @Override
+    public String toString() {
+        String s = "Points: ";
+        for (DotModel dot : selectedDots) {
+            s += "(" + dot.getX() + ", " + dot.getY() + ") ";
+        }
+        return s;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        SelectionModel that = (SelectionModel) o;
+
+        if (selectedDots.size() == that.getSelectedDots().size()) {
+            for (DotModel dot : selectedDots) {
+                if (! that.getSelectedDots().contains(dot))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+
 }

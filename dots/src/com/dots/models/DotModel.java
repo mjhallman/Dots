@@ -90,4 +90,19 @@ public class DotModel {
         return y;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DotModel that = (DotModel) o;
+
+        if ( (color == that.getColor()) &&  (x == that.getX()) && (y == that.getY())) {
+            return true;
+        }
+        return false;
+    }
+
+
+
 }
