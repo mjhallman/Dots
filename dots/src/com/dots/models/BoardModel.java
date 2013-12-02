@@ -1,6 +1,7 @@
 package com.dots.models;
 
 import java.awt.*;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -108,24 +109,20 @@ public class BoardModel {
 //        }
 
 
-        int previousSelectionsSize = 0;
-        int iterations = 0; // finding all is too slow
-        HashSet<SelectionModel> selectionsToTest = new HashSet<SelectionModel>();
+        ArrayDeque<SelectionModel> selectionsToTest = new ArrayDeque<SelectionModel>();
         selectionsToTest.addAll(possibleSelections);
 
 
-        while (previousSelectionsSize < possibleSelections.size()) {
+        while (!selectionsToTest.isEmpty()) {
         // For each possible selection, try to increase it by looking backwards, and forwards.
         // For every new possible selection found using this method, add it to the set of possible selections.
-            previousSelectionsSize = possibleSelections.size();
+            System.out.println("Looking for more possible selections. Found " + possibleSelections.size() + " so far.");
 
-            System.out.println("Looking for more selections. Found " + previousSelectionsSize + " so far.");
-
-            HashSet<SelectionModel> foundThisRound = new HashSet<SelectionModel>();
+//            HashSet<SelectionModel> foundThisRound = new HashSet<SelectionModel>();
 
             // Look backwards (at first dot in each selection)
-
-            for (SelectionModel selModel : selectionsToTest) {
+            SelectionModel selModel = selectionsToTest.remove();
+//            for (SelectionModel selModel : selectionsToTestold) {
                 // Find all possible selections by looking backwards:
                 for (DotModel dot : getSurroundingDotsWithSameColor(selModel.getFirstDot())) {
                     if (!dot.equals(selModel.getSelectedDots().get(1))) {
@@ -134,7 +131,9 @@ public class BoardModel {
                         dots.addAll(selModel.getSelectedDots());
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
-                            foundThisRound.add(possibleSelection);
+
+                            selectionsToTest.add(possibleSelection);
+                            possibleSelections.add(possibleSelection);
                             selectionModel = possibleSelection;
                         }
                     }
@@ -148,21 +147,14 @@ public class BoardModel {
                         dots.add(dot);
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
-                            foundThisRound.add(possibleSelection); // Any selections found from looking backwards will not be equivalent to any selection found looking forwards. No need to check if it is already contained. (I think?)
+                            selectionsToTest.add(possibleSelection); // Any selections found from looking backwards will not be equivalent to any selection found looking forwards. No need to check if it is already contained. (I think?)
+                            possibleSelections.add(possibleSelection);
                             selectionModel = possibleSelection;
                         }
                     }
                 }
 
             }
-
-
-
-            possibleSelections.addAll(foundThisRound);
-            selectionsToTest.clear();
-            selectionsToTest.addAll(foundThisRound);
-
-        }
 
         System.out.println("Found all possible selections: " + possibleSelections.size());
 
