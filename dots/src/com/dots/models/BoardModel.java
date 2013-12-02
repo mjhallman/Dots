@@ -20,6 +20,17 @@ public class BoardModel {
     SelectionModel selectionModel;
     private RepaintRequestHandler repaintHandler;
 
+    public int getNumberOfDotsWithColor(Color color) {
+        int totalFound = 0;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (getDot(i,j).getColor().equals(color))
+                    totalFound++;
+            }
+        }
+        return totalFound;
+    }
+
     public interface RepaintRequestHandler {
         public void requestRepaint();
     }
@@ -84,6 +95,7 @@ public class BoardModel {
      *
      */
     public void updateSelection() {
+        System.out.println("--------------------------------------");
 
         HashSet<SelectionModel> possibleSelections = new HashSet<SelectionModel>();
 
@@ -97,7 +109,7 @@ public class BoardModel {
             }
         }
 
-        System.out.println("Found: " + possibleSelections.size() + " paris.");
+//        System.out.println("Found: " + possibleSelections.size() + " paris.");
 //        for (SelectionModel selModel : possibleSelections) {
 //            System.out.println(selModel);
 //        }
@@ -122,7 +134,7 @@ public class BoardModel {
         while (!selectionsToTest.isEmpty()) {
         // For each possible selection, try to increase it by looking backwards, and forwards.
         // For every new possible selection found using this method, add it to the set of possible selections.
-            System.out.println("Looking for more possible selections. Found " + possibleSelections.size() + " so far.");
+//            System.out.println("Looking for more possible selections. Found " + possibleSelections.size() + " so far.");
 
             // Look backwards (at first dot in each selection)
             SelectionModel selModel = selectionsToTest.remove();
@@ -135,13 +147,11 @@ public class BoardModel {
                         dots.addAll(selModel.getSelectedDots());
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
-
-                            if (!possibleSelection.isSquare()) {
+                            if (!possibleSelection.containsSquare()) {
                                 selectionsToTest.add(possibleSelection);
                             }
+//                            System.out.println("Found new selection: " + possibleSelection);
                             possibleSelections.add(possibleSelection);
-                            selectionModel = possibleSelection;
-                            repaintHandler.requestRepaint();
                         }
                     }
                 }
@@ -154,19 +164,37 @@ public class BoardModel {
                         dots.add(dot);
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
-                            if (!possibleSelection.isSquare()) {
+                            if (!possibleSelection.containsSquare()) {
                                 selectionsToTest.add(possibleSelection); // Any selections found from looking backwards will not be equivalent to any selection found looking forwards. No need to check if it is already contained. (I think?)
                             }
+//                            System.out.println("Found new selection: " + possibleSelection);
                             possibleSelections.add(possibleSelection);
-                            selectionModel = possibleSelection;
-                            repaintHandler.requestRepaint();
                         }
                     }
                 }
 
-            }
+//            try {
+//                Thread.sleep(10);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
 
-        System.out.println("Found all possible selections: " + possibleSelections.size());
+        }
+
+//        System.out.println("--------------------------------------");
+        System.out.println("Total number of possible selections: " + possibleSelections.size());
+        int maxScore = 0;
+        SelectionModel bestSelection = null;
+        for (SelectionModel selModel : possibleSelections) {
+            if (selModel.getScore() > maxScore) {
+                maxScore = selModel.getScore();
+                bestSelection = selModel;
+            }
+        }
+        selectionModel = bestSelection;
+
+        System.out.println("Best selection score: " + maxScore);
+
 
 
 

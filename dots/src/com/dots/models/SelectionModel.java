@@ -2,6 +2,7 @@ package com.dots.models;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created with IntelliJ IDEA.
@@ -75,13 +76,30 @@ public class SelectionModel {
     /**
      * @return True if this selection is a square. False otherwise.
      */
-    public boolean isSquare() {
-        if (selectedDots.size() > 0) {
-            if (selectedDots.get(0).equals(selectedDots.get(selectedDots.size()-1)))
-                return true;
-        }
-        return false;
+    public boolean containsSquare() {
+//        if (selectedDots.size() > 0) {
+//            if (selectedDots.get(0).equals(selectedDots.get(selectedDots.size()-1)))
+//                return true;
+//        }
+//        return false;
+
+        // TODO: finding if any duplactes is inefficient.
+        HashSet<DotModel> deduplicated = new HashSet<DotModel>();
+        deduplicated.addAll(selectedDots);
+        if (deduplicated.size() == selectedDots.size())
+            return false;
+        return true;
     }
+
+
+    public int getScore() {
+        if (!containsSquare()) {
+            return selectedDots.size();
+        } else {
+            return boardModel.getNumberOfDotsWithColor(this.color);
+        }
+    }
+
 
     @Override
     public String toString() {
@@ -108,6 +126,8 @@ public class SelectionModel {
 
         return true;
     }
+
+
 
 
 }
