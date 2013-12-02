@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.Color;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +27,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
     JButton resetButton;
     JButton changeButton;
     JButton runButton;
+    JButton findBestMoveButton;
 
     JLabel compModeLabel;
     JLabel runModeLabel;
@@ -51,17 +51,23 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         buttonPanel = new JPanel();     //create panels
+        FlowLayout flowLayout = new FlowLayout();
+        GridLayout gridLayout = new GridLayout(10, 0);
+        buttonPanel.setLayout(gridLayout);
         boardPanel = new BoardPanel();
 
         resetButton = new JButton("Reset");    //create buttons
         runButton = new JButton("Run");
         changeButton = new JButton("Change");
+        findBestMoveButton = new JButton("Find Best Move");
 
         compModeLabel = new JLabel("User is playing");
 
         buttonPanel.add(resetButton);   //add buttons to panel
-        buttonPanel.add(runButton);
+
         buttonPanel.add(changeButton);
+        buttonPanel.add(findBestMoveButton);
+        buttonPanel.add(runButton);
 
         buttonPanel.setBackground(Color.black);
 
@@ -69,11 +75,13 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         add(boardPanel);
 
         resetButton.addActionListener(this);   //add action listeners
-        buttonPanel.add(resetButton);
+//        buttonPanel.add(resetButton);
         changeButton.addActionListener(this);
-        buttonPanel.add(changeButton);
+//        buttonPanel.add(changeButton);
         runButton.addActionListener(this);
-        buttonPanel.add(runButton);
+//        buttonPanel.add(runButton);
+        findBestMoveButton.addActionListener(this);
+
 
         boardPanel.addMouseListener(this);   //add mouse listener
 
@@ -99,14 +107,17 @@ public class Game extends JFrame implements ActionListener, MouseListener {
             else
                 compMode = 0;
 
-
-            boardPanel.getBoardModel().updateSelection();
-
-            repaint();
+            if (boardPanel.getBoardModel().getSelectionModel() != null) {
+                boardPanel.setBoardModel(boardPanel.getBoardModel().performSelection());
+                repaint();
+            }
 
 
 
 //            System.out.println("run");
+        } else if (event.getSource() == findBestMoveButton) {
+            boardPanel.getBoardModel().updateSelection();
+            repaint();
         }
     }
 

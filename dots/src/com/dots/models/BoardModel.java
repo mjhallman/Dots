@@ -254,8 +254,18 @@ public class BoardModel {
 
     public BoardModel copy() {
         BoardModel copy = new BoardModel(this.repaintHandler);
+        DotModel[][] copyDotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                copyDotModels[i][j] = new DotModel(i, j, getDot(i,j).getColor());
+            }
+        }
         copy.setDotModels(this.dotModels);
-        copy.setSelectionModel(this.selectionModel);
+        copy.setDotModels(copyDotModels);
+        ArrayList<DotModel> copySelectedDots = new ArrayList<DotModel>();
+        copySelectedDots.addAll(this.selectionModel.getSelectedDots());
+        SelectionModel copySelectionModel = new SelectionModel(copy, copySelectedDots);
+        copy.setSelectionModel(copySelectionModel);
         return copy;
     }
 
@@ -266,27 +276,72 @@ public class BoardModel {
     /**
      * @return A new board model, as if the current selection
      * were to be performed. All positions which are unknown
-     * are null.
+     * are set to null.
      */
-//    public BoardModel performSelection() {
-//        BoardModel newBoard = copy();
-//        for (DotModel dot : selectionModel.getSelectedDots()) {
-//            int x = dot.getX();
-//            int y = dot.getY() - 1;
-//            while (x >= 0) {
-//                DotModel dotAbove = getDot(x, y);
-//                if (dotAbove.getColor().equals(dot.getColor())) {
-//                    continue;
-//                } else {
-//
-//                    newBoard.getDotModels()[x][y-1];
-//                }
-//
-//
-//                x--;
-//            }
-//        }
-//    }
+    public BoardModel performSelection() {
+        BoardModel newBoard = copy();
+        ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
+        dotsToRemove.addAll(newBoard.getSelectionModel().getSelectedDots());
+
+        while (!dotsToRemove.isEmpty()) {
+            DotModel dotToRemove = dotsToRemove.remove();
+            ArrayList<DotModel> dotsInSameColumn = new ArrayList<DotModel>();
+            dotsInSameColumn.add(dotToRemove);
+            for (DotModel possibleDeeperDot : dotsToRemove) {
+                if (possibleDeeperDot.getX() == dotToRemove.getX()) {
+                    dotsInSameColumn.add(possibleDeeperDot);
+                    if (possibleDeeperDot.getY() > dotToRemove.getY()) {
+                        dotToRemove = possibleDeeperDot;
+                    }
+                }
+            }
+            int numToShift = dotsInSameColumn.size()+1;
+            for (DotModel dot: dotsInSameColumn) {
+                dotsToRemove.remove(dot);
+            }
+            int x = dotToRemove.getX();
+            int y = dotToRemove.getY() - 1;
+            // Shift all above dots down:
+            while (y >= 0) {
+
+                DotModel dotAbove = newBoard.getDot(x, y);
+                if (!dotsInSameColumn.contains(dotAbove)) {
+                    System.out.println("Shifting dot (" + dotAbove.getX() + ", " + dotAbove.getY() + ") to position: (" + x + ", " + (y+numToShift) + ")" );
+                    dotAbove.setY(y+numToShift);
+                    newBoard.setDot(dotAbove);
+//                    newBoard.getDotModels()[x][y+numToShift] = dotAbove;
+                }
+                y--;
+            }
+
+//            numToShift--;
+            // Set the top dots to null:
+            while (numToShift >= 0) {
+                newBoard.getDotModels()[x][numToShift] = null;
+                numToShift--;
+            }
+        }
+        return newBoard;
+    }
+
+
+    /**
+     * Compares each dot in the two boards for equality.
+     * Doesn't look at the selectino model.
+     * @param other
+     * @return True if the boards contain the same dots. False otherwise.
+     */
+    public boolean hasSameDots(BoardModel other) {
+        boolean equal = true;
+        BoardModel otherBoard = (BoardModel) other;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (!getDot(i, j).equals(otherBoard.getDot(i,j)))
+                    equal = false;
+            }
+        }
+        return equal;
+    }
 
 
 }

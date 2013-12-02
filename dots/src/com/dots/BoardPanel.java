@@ -46,8 +46,14 @@ public class BoardPanel extends JPanel implements BoardModel.RepaintRequestHandl
         for (int i = 0; i < BoardModel.BOARD_SIZE; i++) {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
                 DotModel d = boardModel.getDot(i, j);
-                g2.setColor(d.getColor());
-                g2.fillOval(X_OFFSET + (d.getX() * 40) , Y_OFFSET + (d.getY() * 40), 30, 30);
+                if (d != null) {
+                    g2.setColor(d.getColor());
+                    g2.fillOval(X_OFFSET + (d.getX() * 40) , Y_OFFSET + (d.getY() * 40), 30, 30);
+                } else {
+                    g2.setColor(Color.WHITE);
+                    g2.fillOval(X_OFFSET + (i * 40) , Y_OFFSET + (j * 40), 30, 30);
+                }
+
             }
         }
 
