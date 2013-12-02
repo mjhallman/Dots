@@ -278,7 +278,7 @@ public class BoardModel {
      * were to be performed. All positions which are unknown
      * are set to null.
      */
-    public BoardModel performSelection() {
+    public BoardModel getNextState() {
         BoardModel newBoard = copy();
         ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
         dotsToRemove.addAll(newBoard.getSelectionModel().getSelectedDots());
@@ -295,7 +295,8 @@ public class BoardModel {
                     }
                 }
             }
-            int numToShift = dotsInSameColumn.size()+1;
+            int numToShift = dotsInSameColumn.size();
+            System.out.println("Dots in same column: " + dotsInSameColumn.size());
             for (DotModel dot: dotsInSameColumn) {
                 dotsToRemove.remove(dot);
             }
@@ -307,14 +308,14 @@ public class BoardModel {
                 DotModel dotAbove = newBoard.getDot(x, y);
                 if (!dotsInSameColumn.contains(dotAbove)) {
                     System.out.println("Shifting dot (" + dotAbove.getX() + ", " + dotAbove.getY() + ") to position: (" + x + ", " + (y+numToShift) + ")" );
-                    dotAbove.setY(y+numToShift);
+                    dotAbove.setY(y + numToShift);
                     newBoard.setDot(dotAbove);
 //                    newBoard.getDotModels()[x][y+numToShift] = dotAbove;
                 }
                 y--;
             }
 
-//            numToShift--;
+            numToShift--;
             // Set the top dots to null:
             while (numToShift >= 0) {
                 newBoard.getDotModels()[x][numToShift] = null;
@@ -328,16 +329,21 @@ public class BoardModel {
     /**
      * Compares each dot in the two boards for equality.
      * Doesn't look at the selectino model.
-     * @param other
+     * @param otherBoard
      * @return True if the boards contain the same dots. False otherwise.
      */
-    public boolean hasSameDots(BoardModel other) {
+    public boolean hasSameDots(BoardModel otherBoard) {
         boolean equal = true;
-        BoardModel otherBoard = (BoardModel) other;
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                if (!getDot(i, j).equals(otherBoard.getDot(i,j)))
-                    equal = false;
+                if (getDot(i, j) != null) {
+                    if (!getDot(i, j).equals(otherBoard.getDot(i,j)))
+                        equal = false;
+                } else {
+                    if (otherBoard.getDot(i, j) != null)
+                        equal = false;
+                }
+
             }
         }
         return equal;

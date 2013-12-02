@@ -2,6 +2,7 @@ package com.dots;
 
 import com.dots.models.BoardModel;
 import com.dots.models.DotModel;
+import com.dots.models.ExampleBoards;
 import com.dots.models.SelectionModel;
 
 import javax.swing.*;
@@ -28,6 +29,8 @@ public class Game extends JFrame implements ActionListener, MouseListener {
     JButton changeButton;
     JButton runButton;
     JButton findBestMoveButton;
+    JButton loadExample1Button;
+    JButton loadExample2Button;
 
     JLabel compModeLabel;
     JLabel runModeLabel;
@@ -60,6 +63,8 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         runButton = new JButton("Run");
         changeButton = new JButton("Change");
         findBestMoveButton = new JButton("Find Best Move");
+        loadExample1Button = new JButton("Example 1");
+        loadExample2Button = new JButton("Example 2");
 
         compModeLabel = new JLabel("User is playing");
 
@@ -67,6 +72,9 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         buttonPanel.add(findBestMoveButton);
         buttonPanel.add(runButton);
         buttonPanel.add(changeButton);
+        buttonPanel.add(loadExample1Button);
+        buttonPanel.add(loadExample2Button);
+
 
 
         buttonPanel.setBackground(Color.black);
@@ -81,6 +89,8 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         runButton.addActionListener(this);
 //        buttonPanel.add(runButton);
         findBestMoveButton.addActionListener(this);
+        loadExample1Button.addActionListener(this);
+        loadExample2Button.addActionListener(this);
 
 
         boardPanel.addMouseListener(this);   //add mouse listener
@@ -108,7 +118,8 @@ public class Game extends JFrame implements ActionListener, MouseListener {
                 compMode = 0;
 
             if (boardPanel.getBoardModel().getSelectionModel() != null) {
-                boardPanel.setBoardModel(boardPanel.getBoardModel().performSelection());
+                boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
+                boardPanel.getBoardModel().setSelectionModel(null);
                 repaint();
             }
 
@@ -117,6 +128,12 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 //            System.out.println("run");
         } else if (event.getSource() == findBestMoveButton) {
             boardPanel.getBoardModel().updateSelection();
+            repaint();
+        } else if (event.getSource() == loadExample1Button) {
+            boardPanel.setBoardModel(ExampleBoards.getExample1());
+            repaint();
+        } else if (event.getSource() == loadExample2Button) {
+            boardPanel.setBoardModel(ExampleBoards.getExample2());
             repaint();
         }
     }
