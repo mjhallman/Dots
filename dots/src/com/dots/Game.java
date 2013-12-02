@@ -64,10 +64,10 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         compModeLabel = new JLabel("User is playing");
 
         buttonPanel.add(resetButton);   //add buttons to panel
-
-        buttonPanel.add(changeButton);
         buttonPanel.add(findBestMoveButton);
         buttonPanel.add(runButton);
+        buttonPanel.add(changeButton);
+
 
         buttonPanel.setBackground(Color.black);
 
