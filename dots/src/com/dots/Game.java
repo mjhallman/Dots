@@ -19,7 +19,7 @@ import java.awt.Color;
  * Time: 2:31 PM
  * To change this template use File | Settings | File Templates.
  */
-public class Game extends JFrame implements ActionListener, MouseListener{
+public class Game extends JFrame implements ActionListener, MouseListener {
 
     JPanel buttonPanel;
     BoardPanel boardPanel;
@@ -39,6 +39,9 @@ public class Game extends JFrame implements ActionListener, MouseListener{
     private Color selectionColor;
 
     MouseListener mouseListener;
+
+
+
 
     public Game() {
 
@@ -81,7 +84,7 @@ public class Game extends JFrame implements ActionListener, MouseListener{
     public void actionPerformed(ActionEvent event) {
 
         if (event.getSource() == resetButton) {
-            boardPanel.setBoardModel(new BoardModel());
+            boardPanel.setBoardModel(new BoardModel(boardPanel));
             selectedColorFlag = 0;
             repaint();
         }

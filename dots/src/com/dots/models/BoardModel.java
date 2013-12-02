@@ -18,8 +18,14 @@ public class BoardModel {
 
     DotModel[][] dotModels;
     SelectionModel selectionModel;
+    private RepaintRequestHandler repaintHandler;
 
-    public BoardModel() {
+    public interface RepaintRequestHandler {
+        public void requestRepaint();
+    }
+
+    public BoardModel(RepaintRequestHandler repaintHandler) {
+        this.repaintHandler = repaintHandler;
         this.dotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
 
 
@@ -97,7 +103,7 @@ public class BoardModel {
 //        }
 
 
-        // Display a ranodm pair: (just for testing)
+        // Display a random pair: (just for testing)
 //        int i = new Random().nextInt(possibleSelections.size());
 //        int j = 0;
 //        for (SelectionModel selModel : possibleSelections) {
@@ -118,8 +124,6 @@ public class BoardModel {
         // For every new possible selection found using this method, add it to the set of possible selections.
             System.out.println("Looking for more possible selections. Found " + possibleSelections.size() + " so far.");
 
-//            HashSet<SelectionModel> foundThisRound = new HashSet<SelectionModel>();
-
             // Look backwards (at first dot in each selection)
             SelectionModel selModel = selectionsToTest.remove();
 //            for (SelectionModel selModel : selectionsToTestold) {
@@ -132,9 +136,12 @@ public class BoardModel {
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
 
-                            selectionsToTest.add(possibleSelection);
+                            if (!possibleSelection.isSquare()) {
+                                selectionsToTest.add(possibleSelection);
+                            }
                             possibleSelections.add(possibleSelection);
                             selectionModel = possibleSelection;
+                            repaintHandler.requestRepaint();
                         }
                     }
                 }
@@ -147,9 +154,12 @@ public class BoardModel {
                         dots.add(dot);
                         SelectionModel possibleSelection = new SelectionModel(this, dots);
                         if (!possibleSelections.contains(possibleSelection)) {
-                            selectionsToTest.add(possibleSelection); // Any selections found from looking backwards will not be equivalent to any selection found looking forwards. No need to check if it is already contained. (I think?)
+                            if (!possibleSelection.isSquare()) {
+                                selectionsToTest.add(possibleSelection); // Any selections found from looking backwards will not be equivalent to any selection found looking forwards. No need to check if it is already contained. (I think?)
+                            }
                             possibleSelections.add(possibleSelection);
                             selectionModel = possibleSelection;
+                            repaintHandler.requestRepaint();
                         }
                     }
                 }

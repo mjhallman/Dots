@@ -72,6 +72,17 @@ public class SelectionModel {
         return null;
     }
 
+    /**
+     * @return True if this selection is a square. False otherwise.
+     */
+    public boolean isSquare() {
+        if (selectedDots.size() > 0) {
+            if (selectedDots.get(0).equals(selectedDots.get(selectedDots.size()-1)))
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         String s = "Points: ";

@@ -15,19 +15,26 @@ import java.awt.*;
  * Time: 2:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BoardPanel extends JPanel {
+public class BoardPanel extends JPanel implements BoardModel.RepaintRequestHandler {
 
     private BoardModel boardModel;
 
     int X_OFFSET = 20;
     int Y_OFFSET = 20;
 
+    @Override
+    public void requestRepaint() {
+        repaint();
+    }
+
+
+
 //    public void setBoardModel(BoardModel boardModel) {
 //        this.boardModel = boardModel;
 //        repaint();
 //    }
     public BoardPanel(){
-        boardModel = new BoardModel();
+        boardModel = new BoardModel(this);
         boardModel.populateRandomBoard();
     }
 
