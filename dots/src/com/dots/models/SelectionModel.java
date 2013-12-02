@@ -92,7 +92,10 @@ public class SelectionModel {
     }
 
 
-    public int getScore() {
+    /**
+     * @return The score this selection model would immediately generate. (with not lookahead at future states.)
+     */
+    public int getImmediateScore() {
         if (!containsSquare()) {
             return selectedDots.size();
         } else {

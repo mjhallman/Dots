@@ -35,6 +35,10 @@ public class BoardModel {
         public void requestRepaint();
     }
 
+    public void setDotModels(DotModel[][] dotModels) {
+        this.dotModels = dotModels;
+    }
+
     public BoardModel(RepaintRequestHandler repaintHandler) {
         this.repaintHandler = repaintHandler;
         this.dotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
@@ -173,11 +177,7 @@ public class BoardModel {
                     }
                 }
 
-//            try {
-//                Thread.sleep(10);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
+
 
         }
 
@@ -186,8 +186,8 @@ public class BoardModel {
         int maxScore = 0;
         SelectionModel bestSelection = null;
         for (SelectionModel selModel : possibleSelections) {
-            if (selModel.getScore() > maxScore) {
-                maxScore = selModel.getScore();
+            if (selModel.getImmediateScore() > maxScore) {
+                maxScore = selModel.getImmediateScore();
                 bestSelection = selModel;
             }
         }
@@ -251,4 +251,42 @@ public class BoardModel {
 
         return surroundingDots;
     }
+
+    public BoardModel copy() {
+        BoardModel copy = new BoardModel(this.repaintHandler);
+        copy.setDotModels(this.dotModels);
+        copy.setSelectionModel(this.selectionModel);
+        return copy;
+    }
+
+    public DotModel[][] getDotModels() {
+        return dotModels;
+    }
+
+    /**
+     * @return A new board model, as if the current selection
+     * were to be performed. All positions which are unknown
+     * are null.
+     */
+//    public BoardModel performSelection() {
+//        BoardModel newBoard = copy();
+//        for (DotModel dot : selectionModel.getSelectedDots()) {
+//            int x = dot.getX();
+//            int y = dot.getY() - 1;
+//            while (x >= 0) {
+//                DotModel dotAbove = getDot(x, y);
+//                if (dotAbove.getColor().equals(dot.getColor())) {
+//                    continue;
+//                } else {
+//
+//                    newBoard.getDotModels()[x][y-1];
+//                }
+//
+//
+//                x--;
+//            }
+//        }
+//    }
+
+
 }
