@@ -15,7 +15,7 @@ import java.awt.*;
  * Time: 2:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class BoardPanel extends JPanel {
+public class BoardPanel extends JPanel implements BoardModel.RepaintRequestHandler {
 
     private BoardModel boardModel;
     private Color selectionColor;
@@ -23,8 +23,16 @@ public class BoardPanel extends JPanel {
     int X_OFFSET = 20;
     int Y_OFFSET = 20;
 
+    @Override
+    public void requestRepaint() {
+        repaint();
+    }
+//    public void setBoardModel(BoardModel boardModel) {
+//        this.boardModel = boardModel;
+//        repaint();
+//    }
     public BoardPanel(){
-        boardModel = new BoardModel();
+        boardModel = new BoardModel(this);
         boardModel.populateRandomBoard();
     }
 
@@ -36,8 +44,14 @@ public class BoardPanel extends JPanel {
         for (int i = 0; i < BoardModel.BOARD_SIZE; i++) {
             for (int j = 0; j <BoardModel.BOARD_SIZE; j++) {
                 DotModel d = boardModel.getDot(i, j);
-                g2.setColor(d.getColor());
-                g2.fillOval(X_OFFSET + (d.getX() * 40) , Y_OFFSET + (d.getY() * 40), 30, 30);
+                if (d != null) {
+                    g2.setColor(d.getColor());
+                    g2.fillOval(X_OFFSET + (d.getX() * 40) , Y_OFFSET + (d.getY() * 40), 30, 30);
+                } else {
+                    g2.setColor(Color.WHITE);
+                    g2.fillOval(X_OFFSET + (i * 40) , Y_OFFSET + (j * 40), 30, 30);
+                }
+
             }
         }
 
@@ -55,6 +69,7 @@ public class BoardPanel extends JPanel {
             }
         }
     }
+
 //        g2.drawOval(10, 10, 50, 50);
 //        g2.draw((Shape) circle);
 
@@ -81,7 +96,7 @@ public class BoardPanel extends JPanel {
 //                    AffineTransform.getTranslateInstance(w / 2, h / 2);
 //            at.rotate(Math.toRadians(deg));
 //            g2.draw(at.createTransformedShape(e));
-//        }
+
 
 //    private int getBoardPosition(DotModel dotModel) {
 //        return new Posn(X_OFFSET + dotModel.getX())
