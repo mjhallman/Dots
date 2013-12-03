@@ -222,30 +222,33 @@ public class BoardModel {
 
     private ArrayList<DotModel> getSurroundingDotsWithSameColor(DotModel d) {
         ArrayList<DotModel> surroundingDots = new ArrayList<DotModel>();
+        if (d == null) {
+            return surroundingDots;
+        }
         // above
         if (d.getY()-1 >= 0) {
             DotModel above = getDot(d.getX(), d.getY()-1);
-            if (d.getColor().equals(above.getColor()))
+            if ((above != null) && (d.getColor().equals(above.getColor())))
                 surroundingDots.add(above);
         }
         // right
         if (d.getX()+1 < BOARD_SIZE) {
             DotModel right = getDot(d.getX()+1, d.getY());
-            if (d.getColor().equals(right.getColor()))
+            if ((right != null) && (d.getColor().equals(right.getColor())))
                 surroundingDots.add(right);
         }
 
         // down
         if (d.getY()+1 < BOARD_SIZE) {
             DotModel down = getDot(d.getX(), d.getY()+1);
-            if (d.getColor().equals(down.getColor()))
+            if ((down != null) && (d.getColor().equals(down.getColor())))
                 surroundingDots.add(down);
         }
 
         // left
         if (d.getX()-1 >= 0) {
             DotModel left = getDot(d.getX()-1, d.getY());
-            if (d.getColor().equals(left.getColor()))
+            if ((left != null) && (d.getColor().equals(left.getColor())))
                 surroundingDots.add(left);
         }
 
@@ -257,7 +260,8 @@ public class BoardModel {
         DotModel[][] copyDotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                copyDotModels[i][j] = new DotModel(i, j, getDot(i,j).getColor());
+                if (getDot(i, j) != null)
+                    copyDotModels[i][j] = new DotModel(i, j, getDot(i,j).getColor());
             }
         }
         copy.setDotModels(this.dotModels);
@@ -347,7 +351,7 @@ public class BoardModel {
 
     /**
      * Compares each dot in the two boards for equality.
-     * Doesn't look at the selectino model.
+     * Doesn't look at the selection model.
      * @param otherBoard
      * @return True if the boards contain the same dots. False otherwise.
      */
