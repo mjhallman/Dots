@@ -273,56 +273,125 @@ public class BoardModel {
         return dotModels;
     }
 
+    public ArrayList<DotModel> getAllDots() {
+        ArrayList<DotModel> dots = new ArrayList<DotModel>();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                dots.add(dotModels[i][j]);
+            }
+        }
+        return dots;
+    }
+
+     public ArrayList<DotModel> getAllDotsWithColor(Color color) {
+        ArrayList<DotModel> dotsWithSameColor = new ArrayList<DotModel>();
+        for (DotModel dot: getAllDots()) {
+            if (dot.getColor().equals(color)) {
+                dotsWithSameColor.add(dot);
+            }
+        }
+         return dotsWithSameColor;
+     }
+
+    public BoardModel getNextState2() {
+        BoardModel newBoard = copy();
+        // Find all dots to be removed, and add them to a queue:
+        ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
+        if (selectionModel.containsSquare()) { // Special handling for squares.
+            dotsToRemove.addAll(getAllDotsWithColor(selectionModel.getColor()));
+        }
+        else {
+            for (DotModel dot : newBoard.getSelectionModel().getSelectedDots()) {
+                if (!dotsToRemove.contains(dot)){
+                    dotsToRemove.add(dot);
+                }
+            }
+        }
+        // Set all dots to remove to null.
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (dotsToRemove.contains(newBoard.getDot(i,j)))
+                    newBoard.getDotModels()[i][j] = null;
+            }
+        }
+
+       // Shift all null spaces to the top:
+
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            int numToShift = 0;
+            for (int row = BOARD_SIZE-1; row >= 0; row--) {
+                DotModel currentDot = newBoard.getDot(col, row);
+                if (currentDot == null) {
+                    numToShift++;
+                    continue;
+                } else {
+                    if (numToShift > 0) {
+                        // Shift dot down numToShift spaces.
+                        newBoard.setDot(new DotModel(col, row+numToShift, currentDot.getColor()));
+                        newBoard.getDotModels()[col][row] = null;
+                    }
+                }
+            }
+        }
+
+        return newBoard;
+    }
+
     /**
      * @return A new board model, as if the current selection
      * were to be performed. All positions which are unknown
      * are set to null.
      */
     public BoardModel getNextState() {
-        BoardModel newBoard = copy();
-        ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
-        dotsToRemove.addAll(newBoard.getSelectionModel().getSelectedDots());
-
-        while (!dotsToRemove.isEmpty()) {
-            DotModel dotToRemove = dotsToRemove.remove();
-            ArrayList<DotModel> dotsInSameColumn = new ArrayList<DotModel>();
-            dotsInSameColumn.add(dotToRemove);
-            for (DotModel possibleDeeperDot : dotsToRemove) {
-                if (possibleDeeperDot.getX() == dotToRemove.getX()) {
-                    dotsInSameColumn.add(possibleDeeperDot);
-                    if (possibleDeeperDot.getY() > dotToRemove.getY()) {
-                        dotToRemove = possibleDeeperDot;
-                    }
-                }
-            }
-            int numToShift = dotsInSameColumn.size();
-            System.out.println("Dots in same column: " + dotsInSameColumn.size());
-            for (DotModel dot: dotsInSameColumn) {
-                dotsToRemove.remove(dot);
-            }
-            int x = dotToRemove.getX();
-            int y = dotToRemove.getY() - 1;
-            // Shift all above dots down:
-            while (y >= 0) {
-
-                DotModel dotAbove = newBoard.getDot(x, y);
-                if (!dotsInSameColumn.contains(dotAbove)) {
-                    System.out.println("Shifting dot (" + dotAbove.getX() + ", " + dotAbove.getY() + ") to position: (" + x + ", " + (y+numToShift) + ")" );
-                    dotAbove.setY(y + numToShift);
-                    newBoard.setDot(dotAbove);
-//                    newBoard.getDotModels()[x][y+numToShift] = dotAbove;
-                }
-                y--;
-            }
-
-            numToShift--;
-            // Set the top dots to null:
-            while (numToShift >= 0) {
-                newBoard.getDotModels()[x][numToShift] = null;
-                numToShift--;
-            }
-        }
-        return newBoard;
+        return getNextState2();
+//        BoardModel newBoard = copy();
+//        ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
+//        for (DotModel dot : newBoard.getSelectionModel().getSelectedDots()) {
+//            if (!dotsToRemove.contains(dot)) {
+//                dotsToRemove.add(dot);
+//            }
+//        }
+//
+//        while (!dotsToRemove.isEmpty()) {
+//            DotModel dotToRemove = dotsToRemove.remove();
+//            ArrayList<DotModel> dotsInSameColumn = new ArrayList<DotModel>();
+////            dotsInSameColumn.add(dotToRemove);
+//            for (DotModel possibleDeeperDot : dotsToRemove) {
+//                if (possibleDeeperDot.getX() == dotToRemove.getX()) {
+//                    dotsInSameColumn.add(possibleDeeperDot);
+//                    if (possibleDeeperDot.getY() >= dotToRemove.getY()) {
+//                        dotToRemove = possibleDeeperDot;
+//                    }
+//                }
+//            }
+//            int numToShift = dotsInSameColumn.size();
+//            System.out.println("Dots in same column: " + dotsInSameColumn.size());
+//            for (DotModel dot: dotsInSameColumn) {
+//                dotsToRemove.remove(dot);
+//            }
+//            int x = dotToRemove.getX();
+//            int y = dotToRemove.getY() - 1;
+//            // Shift all above dots down:
+//            while (y >= 0) {
+//
+//                DotModel dotAbove = newBoard.getDot(x, y);
+//                if (!dotsInSameColumn.contains(dotAbove)) {
+//                    System.out.println("Shifting dot (" + dotAbove.getX() + ", " + dotAbove.getY() + ") to position: (" + x + ", " + (y+numToShift) + ")" );
+//                    dotAbove.setY(y + numToShift);
+//                    newBoard.setDot(dotAbove);
+////                    newBoard.getDotModels()[x][y+numToShift] = dotAbove;
+//                }
+//                y--;
+//            }
+//
+//            numToShift--;
+//            // Set the top dots to null:
+//            while (numToShift >= 0) {
+//                newBoard.getDotModels()[x][numToShift] = null;
+//                numToShift--;
+//            }
+//        }
+//        return newBoard;
     }
 
 
