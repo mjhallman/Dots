@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-import java.awt.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: matthallman
@@ -74,7 +72,7 @@ public class BoardModel {
 
     public void nextColor(int x, int y, DotModel clickedDot){
         if (clickedDot == null) {
-            setDot(new DotModel(x,y, Color.YELLOW));
+            setDot(new DotModel(x, y, Color.YELLOW));
         } else {
             Color dotColor = clickedDot.getColor();
             Color nextColor = clickedDot.nextColor(dotColor);
@@ -129,11 +127,12 @@ public class BoardModel {
         else {
             int bestScoreFound = 0;
             SelectionModel bestSelectionModelFound = null;
-            for (SelectionModel selModel : getPossibleSelections()) {
+            for (SelectionModel selModel : possibleSelections) {
                 BoardModel bm = copy();
                 bm.setSelectionModel(selModel);
-                bm.updateSelection();
                 bm = bm.getNextState();
+                bm.updateSelection();
+
                 int nextScore = bm.getSelectionModel().getImmediateScore();
                 if ( (selModel.getImmediateScore() + nextScore) > bestScoreFound ) {
                     bestScoreFound = selModel.getImmediateScore() + nextScore;
@@ -337,7 +336,7 @@ public class BoardModel {
      public ArrayList<DotModel> getAllDotsWithColor(Color color) {
         ArrayList<DotModel> dotsWithSameColor = new ArrayList<DotModel>();
         for (DotModel dot: getAllDots()) {
-            if (dot.getColor().equals(color)) {
+            if (( dot != null) && dot.getColor().equals(color)) {
                 dotsWithSameColor.add(dot);
             }
         }
