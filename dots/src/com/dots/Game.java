@@ -32,6 +32,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
     JButton findBestMoveButton;
     JButton loadExample1Button;
     JButton loadExample2Button;
+    JButton loadExample4Button;
 
     JLabel compModeLabel;
     JLabel runModeLabel;
@@ -63,6 +64,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         findBestMoveButton = new JButton("Find Best Move");
         loadExample1Button = new JButton("Example 1");
         loadExample2Button = new JButton("Example 2");
+        loadExample4Button = new JButton("Example 4");
 
         compModeLabel = new JLabel("User is playing");
 
@@ -72,6 +74,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         buttonPanel.add(changeButton);
         buttonPanel.add(loadExample1Button);
         buttonPanel.add(loadExample2Button);
+        buttonPanel.add(loadExample4Button);
 
         buttonPanel.setBackground(Color.black);
 
@@ -87,6 +90,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         findBestMoveButton.addActionListener(this);
         loadExample1Button.addActionListener(this);
         loadExample2Button.addActionListener(this);
+        loadExample4Button.addActionListener(this);
 
         boardPanel.addMouseListener(this);   //add mouse listener
 
@@ -121,7 +125,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 
 //            System.out.println("run");
         } else if (event.getSource() == findBestMoveButton) {
-            boardPanel.getBoardModel().updateSelection();
+            boardPanel.getBoardModel().updateSelection(1);
             repaint();
         } else if (event.getSource() == loadExample1Button) {
             boardPanel.setBoardModel(ExampleBoards.getExample1());
@@ -129,6 +133,10 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         } else if (event.getSource() == loadExample2Button) {
             boardPanel.setBoardModel(ExampleBoards.getExample2());
             repaint();
+        } else if (event.getSource() == loadExample4Button) {
+//            boardPanel.setBoardModel(ExampleBoards.getExample5());
+//            repaint();
+            boardPanel.getBoardModel().updateSelection(1);
         }
     }
 

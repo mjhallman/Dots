@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 import java.awt.*;
 
@@ -26,7 +27,7 @@ public class BoardModel {
         int totalFound = 0;
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                if (getDot(i,j).getColor().equals(color))
+                if ( (getDot(i, j) != null) && getDot(i,j).getColor().equals(color))
                     totalFound++;
             }
         }
@@ -72,9 +73,13 @@ public class BoardModel {
     }
 
     public void nextColor(int x, int y, DotModel clickedDot){
-        Color dotColor = clickedDot.getColor();
-        Color nextColor = clickedDot.nextColor(dotColor);
-        clickedDot.setColor(nextColor);
+        if (clickedDot == null) {
+            setDot(new DotModel(x,y, Color.YELLOW));
+        } else {
+            Color dotColor = clickedDot.getColor();
+            Color nextColor = clickedDot.nextColor(dotColor);
+            clickedDot.setColor(nextColor);
+        }
     }
 
     public void selectColor(int x, int y,  DotModel clickedDot){
@@ -97,11 +102,65 @@ public class BoardModel {
     }
 
 
-    /** Updates this board's SelectionModel to be the best move to take.
-     *
+    public SelectionModel getBestSelection(Set<SelectionModel> selectionModels) {
+        int maxScore = 0;
+        SelectionModel bestSelection = null;
+        for (SelectionModel selModel : selectionModels) {
+            if (selModel.getImmediateScore() > maxScore) {
+                maxScore = selModel.getImmediateScore();
+                bestSelection = selModel;
+            }
+        }
+        return bestSelection;
+    }
+
+
+    /**
+     * Sets the SelectionModel to the best move to make.
+     * @param numForwardStates The number of forward states to look forward.
+     */
+    public void updateSelection(int numForwardStates) {
+        System.out.println("--------------------------------------");
+        Set<SelectionModel> possibleSelections = getPossibleSelections();
+
+        if (numForwardStates == 0) {
+            updateSelection();
+        }
+        else {
+            int bestScoreFound = 0;
+            SelectionModel bestSelectionModelFound = null;
+            for (SelectionModel selModel : getPossibleSelections()) {
+                BoardModel bm = copy();
+                bm.setSelectionModel(selModel);
+                bm.updateSelection();
+                bm = bm.getNextState();
+                int nextScore = bm.getSelectionModel().getImmediateScore();
+                if ( (selModel.getImmediateScore() + nextScore) > bestScoreFound ) {
+                    bestScoreFound = selModel.getImmediateScore() + nextScore;
+                    bestSelectionModelFound = selModel;
+                    System.out.println("Found better total score: " + bestScoreFound + "  --  {" + selModel.getImmediateScore() + ", " + nextScore + "}" + "  --  Next Selection: " + bm.getSelectionModel().toString());
+                }
+
+            }
+            this.selectionModel = bestSelectionModelFound;
+        }
+
+    }
+
+
+    /** Sets this board's SelectionModel to be the best move to take.
+     * (with no lookahead).
      */
     public void updateSelection() {
-        System.out.println("--------------------------------------");
+        this.selectionModel = getBestSelection(getPossibleSelections());
+//        System.out.println("Found Best score: " + selectionModel.getImmediateScore());
+    }
+
+    /**
+     * @return All possible selections in this board.
+     */
+    public Set<SelectionModel> getPossibleSelections() {
+//        System.out.println("--------------------------------------");
 
         HashSet<SelectionModel> possibleSelections = new HashSet<SelectionModel>();
 
@@ -115,22 +174,6 @@ public class BoardModel {
             }
         }
 
-//        System.out.println("Found: " + possibleSelections.size() + " paris.");
-//        for (SelectionModel selModel : possibleSelections) {
-//            System.out.println(selModel);
-//        }
-
-
-        // Display a random pair: (just for testing)
-//        int i = new Random().nextInt(possibleSelections.size());
-//        int j = 0;
-//        for (SelectionModel selModel : possibleSelections) {
-//            if (i == j) {
-//                setSelectionModel(selModel);
-//                break;
-//            }
-//            j++;
-//        }
 
 
         ArrayDeque<SelectionModel> selectionsToTest = new ArrayDeque<SelectionModel>();
@@ -184,21 +227,22 @@ public class BoardModel {
         }
 
 //        System.out.println("--------------------------------------");
-        System.out.println("Total number of possible selections: " + possibleSelections.size());
-        int maxScore = 0;
-        SelectionModel bestSelection = null;
-        for (SelectionModel selModel : possibleSelections) {
-            if (selModel.getImmediateScore() > maxScore) {
-                maxScore = selModel.getImmediateScore();
-                bestSelection = selModel;
-            }
-        }
-        selectionModel = bestSelection;
+//        System.out.println("Total number of possible selections: " + possibleSelections.size());
+//        int maxScore = 0;
+//        SelectionModel bestSelection = null;
+//        for (SelectionModel selModel : possibleSelections) {
+//            if (selModel.getImmediateScore() > maxScore) {
+//                maxScore = selModel.getImmediateScore();
+//                bestSelection = selModel;
+//            }
+//        }
 
-        System.out.println("Best selection score: " + maxScore);
+//        selectionModel = bestSelection;
+
+//        System.out.println("Best selection score: " + maxScore);
 
 
-
+        return possibleSelections;
 
     }
 
@@ -224,30 +268,33 @@ public class BoardModel {
 
     private ArrayList<DotModel> getSurroundingDotsWithSameColor(DotModel d) {
         ArrayList<DotModel> surroundingDots = new ArrayList<DotModel>();
+        if (d == null) {
+            return surroundingDots;
+        }
         // above
         if (d.getY()-1 >= 0) {
             DotModel above = getDot(d.getX(), d.getY()-1);
-            if (d.getColor().equals(above.getColor()))
+            if ((above != null) && (d.getColor().equals(above.getColor())))
                 surroundingDots.add(above);
         }
         // right
         if (d.getX()+1 < BOARD_SIZE) {
             DotModel right = getDot(d.getX()+1, d.getY());
-            if (d.getColor().equals(right.getColor()))
+            if ((right != null) && (d.getColor().equals(right.getColor())))
                 surroundingDots.add(right);
         }
 
         // down
         if (d.getY()+1 < BOARD_SIZE) {
             DotModel down = getDot(d.getX(), d.getY()+1);
-            if (d.getColor().equals(down.getColor()))
+            if ((down != null) && (d.getColor().equals(down.getColor())))
                 surroundingDots.add(down);
         }
 
         // left
         if (d.getX()-1 >= 0) {
             DotModel left = getDot(d.getX()-1, d.getY());
-            if (d.getColor().equals(left.getColor()))
+            if ((left != null) && (d.getColor().equals(left.getColor())))
                 surroundingDots.add(left);
         }
 
@@ -259,13 +306,15 @@ public class BoardModel {
         DotModel[][] copyDotModels = new DotModel[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                copyDotModels[i][j] = new DotModel(i, j, getDot(i,j).getColor());
+                if (getDot(i, j) != null)
+                    copyDotModels[i][j] = new DotModel(i, j, getDot(i,j).getColor());
             }
         }
         copy.setDotModels(this.dotModels);
         copy.setDotModels(copyDotModels);
         ArrayList<DotModel> copySelectedDots = new ArrayList<DotModel>();
-        copySelectedDots.addAll(this.selectionModel.getSelectedDots());
+        if (this.selectionModel != null)
+            copySelectedDots.addAll(this.selectionModel.getSelectedDots());
         SelectionModel copySelectionModel = new SelectionModel(copy, copySelectedDots);
         copy.setSelectionModel(copySelectionModel);
         return copy;
@@ -275,62 +324,81 @@ public class BoardModel {
         return dotModels;
     }
 
+    public ArrayList<DotModel> getAllDots() {
+        ArrayList<DotModel> dots = new ArrayList<DotModel>();
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                dots.add(dotModels[i][j]);
+            }
+        }
+        return dots;
+    }
+
+     public ArrayList<DotModel> getAllDotsWithColor(Color color) {
+        ArrayList<DotModel> dotsWithSameColor = new ArrayList<DotModel>();
+        for (DotModel dot: getAllDots()) {
+            if (dot.getColor().equals(color)) {
+                dotsWithSameColor.add(dot);
+            }
+        }
+         return dotsWithSameColor;
+     }
+
+
     /**
      * @return A new board model, as if the current selection
      * were to be performed. All positions which are unknown
-     * are set to null.
+     * are set to null. (All of these positions will be at the
+     * top of the board, due to the shifting.)
      */
     public BoardModel getNextState() {
         BoardModel newBoard = copy();
+        // Find all dots to be removed, and add them to a queue:
         ArrayDeque<DotModel> dotsToRemove = new ArrayDeque<DotModel>();
-        dotsToRemove.addAll(newBoard.getSelectionModel().getSelectedDots());
+        if (selectionModel.containsSquare()) { // Special handling for squares.
+            dotsToRemove.addAll(getAllDotsWithColor(selectionModel.getColor()));
+        }
+        else {
+            for (DotModel dot : newBoard.getSelectionModel().getSelectedDots()) {
+                if (!dotsToRemove.contains(dot)){
+                    dotsToRemove.add(dot);
+                }
+            }
+        }
+        // Set all dots to remove to null.
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (dotsToRemove.contains(newBoard.getDot(i,j)))
+                    newBoard.getDotModels()[i][j] = null;
+            }
+        }
 
-        while (!dotsToRemove.isEmpty()) {
-            DotModel dotToRemove = dotsToRemove.remove();
-            ArrayList<DotModel> dotsInSameColumn = new ArrayList<DotModel>();
-            dotsInSameColumn.add(dotToRemove);
-            for (DotModel possibleDeeperDot : dotsToRemove) {
-                if (possibleDeeperDot.getX() == dotToRemove.getX()) {
-                    dotsInSameColumn.add(possibleDeeperDot);
-                    if (possibleDeeperDot.getY() > dotToRemove.getY()) {
-                        dotToRemove = possibleDeeperDot;
+       // Shift all null spaces to the top:
+
+        for (int col = 0; col < BOARD_SIZE; col++) {
+            int numToShift = 0;
+            for (int row = BOARD_SIZE-1; row >= 0; row--) {
+                DotModel currentDot = newBoard.getDot(col, row);
+                if (currentDot == null) {
+                    numToShift++;
+                    continue;
+                } else {
+                    if (numToShift > 0) {
+                        // Shift dot down numToShift spaces.
+                        newBoard.setDot(new DotModel(col, row+numToShift, currentDot.getColor()));
+                        newBoard.getDotModels()[col][row] = null;
                     }
                 }
             }
-            int numToShift = dotsInSameColumn.size();
-            System.out.println("Dots in same column: " + dotsInSameColumn.size());
-            for (DotModel dot: dotsInSameColumn) {
-                dotsToRemove.remove(dot);
-            }
-            int x = dotToRemove.getX();
-            int y = dotToRemove.getY() - 1;
-            // Shift all above dots down:
-            while (y >= 0) {
-
-                DotModel dotAbove = newBoard.getDot(x, y);
-                if (!dotsInSameColumn.contains(dotAbove)) {
-                    System.out.println("Shifting dot (" + dotAbove.getX() + ", " + dotAbove.getY() + ") to position: (" + x + ", " + (y+numToShift) + ")" );
-                    dotAbove.setY(y + numToShift);
-                    newBoard.setDot(dotAbove);
-//                    newBoard.getDotModels()[x][y+numToShift] = dotAbove;
-                }
-                y--;
-            }
-
-            numToShift--;
-            // Set the top dots to null:
-            while (numToShift >= 0) {
-                newBoard.getDotModels()[x][numToShift] = null;
-                numToShift--;
-            }
         }
+
         return newBoard;
     }
 
 
     /**
      * Compares each dot in the two boards for equality.
-     * Doesn't look at the selectino model.
+     * Doesn't look at the selection model.
      * @param otherBoard
      * @return True if the boards contain the same dots. False otherwise.
      */

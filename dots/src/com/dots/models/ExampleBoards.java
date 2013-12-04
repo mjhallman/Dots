@@ -138,4 +138,23 @@ public class ExampleBoards {
     }
 
 
+    public static BoardModel getExample4() {
+        BoardModel bm = getExample2();
+        ArrayList<DotModel> selectedDots = new ArrayList<DotModel>();
+        selectedDots.add(bm.getDot(4, 2));
+        selectedDots.add(bm.getDot(4, 3));
+        bm.setSelectionModel(new SelectionModel(bm, selectedDots));
+        return bm;
+    }
+
+    // A board containing a square:
+    public static BoardModel getExample5() {
+        BoardModel bm = getExample2();
+        bm.setDot(new DotModel(5, 2, Color.MAGENTA));
+        bm.setDot(new DotModel(5, 3, Color.MAGENTA));
+        bm.updateSelection();
+        return bm;
+    }
+
+
 }

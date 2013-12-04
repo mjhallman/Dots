@@ -18,6 +18,8 @@ public class BoardModelTest {
 
     @Test
     public void testPerformSelection() throws Exception {
+
+        // Test a selection in last row:
         BoardModel bm = ExampleBoards.getExample2();
         BoardModel test = bm.getNextState();
 
@@ -31,7 +33,7 @@ public class BoardModelTest {
         correct.setDot(new DotModel(4, 4, Color.MAGENTA));
         correct.setDot(new DotModel(4, 5, Color.YELLOW));
 
-        correct.setDot(new DotModel(5, 1, Color.RED));
+        correct.setDot(new DotModel(5, 1, Color.BLUE));
         correct.setDot(new DotModel(5, 2, Color.BLUE));
         correct.setDot(new DotModel(5, 3, Color.YELLOW));
         correct.setDot(new DotModel(5, 4, Color.YELLOW));
@@ -39,6 +41,8 @@ public class BoardModelTest {
 
         Assert.assertTrue(test.hasSameDots(correct));
 
+
+        // Test a selection in first row:
         test = ExampleBoards.getExample3().getNextState();
         correct = ExampleBoards.getExample3();
 
@@ -46,6 +50,62 @@ public class BoardModelTest {
         correct.getDotModels()[5][0] = null;
 
         Assert.assertTrue(test.hasSameDots(correct));
+
+
+
+        // Test a vertical selection:
+        test = ExampleBoards.getExample4().getNextState();
+        correct = ExampleBoards.getExample4();
+        correct.getDotModels()[4][0] = null;
+        correct.getDotModels()[4][1] = null;
+        correct.setDot(new DotModel(4, 2, Color.BLUE));
+        correct.setDot(new DotModel(4, 3, Color.GREEN));
+
+        Assert.assertTrue(test.hasSameDots(correct));
+
+
+        // Test a square:
+        test = ExampleBoards.getExample5().getNextState();
+
+        correct = ExampleBoards.getExample5();
+        correct.getDotModels()[0][0] = null;
+        correct.getDotModels()[1][0] = null;
+        correct.getDotModels()[2][0] = null;
+        correct.getDotModels()[2][1] = null;
+        correct.getDotModels()[4][0] = null;
+        correct.getDotModels()[4][1] = null;
+        correct.getDotModels()[4][2] = null;
+        correct.getDotModels()[5][0] = null;
+        correct.getDotModels()[5][1] = null;
+        correct.getDotModels()[5][2] = null;
+
+        correct.setDot(new DotModel(0, 2, Color.RED));
+        correct.setDot(new DotModel(0, 1, Color.BLUE));
+        correct.setDot(new DotModel(1, 1, Color.YELLOW));
+        correct.setDot(new DotModel(2, 2, Color.RED));
+        correct.setDot(new DotModel(2, 3, Color.YELLOW));
+        correct.setDot(new DotModel(2, 4, Color.YELLOW));
+        correct.setDot(new DotModel(4, 3, Color.BLUE));
+        correct.setDot(new DotModel(4, 4, Color.GREEN));
+        correct.setDot(new DotModel(4, 5, Color.YELLOW));
+        correct.setDot(new DotModel(5, 3, Color.BLUE));
+        correct.setDot(new DotModel(5, 4, Color.BLUE));
+        correct.setDot(new DotModel(5, 5, Color.GREEN));
+
+
+
+
+        Assert.assertTrue(test.hasSameDots(correct));
+
+
+        
+
+
+
+
+
+
+
 
 
 
