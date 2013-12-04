@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created with IntelliJ IDEA.
@@ -24,7 +25,7 @@ public class BoardModel {
         int totalFound = 0;
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                if (getDot(i,j).getColor().equals(color))
+                if ( (getDot(i, j) != null) && getDot(i,j).getColor().equals(color))
                     totalFound++;
             }
         }
@@ -70,9 +71,13 @@ public class BoardModel {
     }
 
     public void nextColor(int x, int y, DotModel clickedDot){
-        Color dotColor = clickedDot.getColor();
-        Color nextColor = clickedDot.nextColor(dotColor);
-        clickedDot.setColor(nextColor);
+        if (clickedDot == null) {
+            setDot(new DotModel(x,y, Color.YELLOW));
+        } else {
+            Color dotColor = clickedDot.getColor();
+            Color nextColor = clickedDot.nextColor(dotColor);
+            clickedDot.setColor(nextColor);
+        }
     }
 
     public void selectColor(int x, int y,  DotModel clickedDot){
@@ -95,11 +100,65 @@ public class BoardModel {
     }
 
 
-    /** Updates this board's SelectionModel to be the best move to take.
-     *
+    public SelectionModel getBestSelection(Set<SelectionModel> selectionModels) {
+        int maxScore = 0;
+        SelectionModel bestSelection = null;
+        for (SelectionModel selModel : selectionModels) {
+            if (selModel.getImmediateScore() > maxScore) {
+                maxScore = selModel.getImmediateScore();
+                bestSelection = selModel;
+            }
+        }
+        return bestSelection;
+    }
+
+
+    /**
+     * Sets the SelectionModel to the best move to make.
+     * @param numForwardStates The number of forward states to look forward.
+     */
+    public void updateSelection(int numForwardStates) {
+        System.out.println("--------------------------------------");
+        Set<SelectionModel> possibleSelections = getPossibleSelections();
+
+        if (numForwardStates == 0) {
+            updateSelection();
+        }
+        else {
+            int bestScoreFound = 0;
+            SelectionModel bestSelectionModelFound = null;
+            for (SelectionModel selModel : getPossibleSelections()) {
+                BoardModel bm = copy();
+                bm.setSelectionModel(selModel);
+                bm.updateSelection();
+                bm = bm.getNextState();
+                int nextScore = bm.getSelectionModel().getImmediateScore();
+                if ( (selModel.getImmediateScore() + nextScore) > bestScoreFound ) {
+                    bestScoreFound = selModel.getImmediateScore() + nextScore;
+                    bestSelectionModelFound = selModel;
+                    System.out.println("Found better total score: " + bestScoreFound + "  --  {" + selModel.getImmediateScore() + ", " + nextScore + "}" + "  --  Next Selection: " + bm.getSelectionModel().toString());
+                }
+
+            }
+            this.selectionModel = bestSelectionModelFound;
+        }
+
+    }
+
+
+    /** Sets this board's SelectionModel to be the best move to take.
+     * (with no lookahead).
      */
     public void updateSelection() {
-        System.out.println("--------------------------------------");
+        this.selectionModel = getBestSelection(getPossibleSelections());
+//        System.out.println("Found Best score: " + selectionModel.getImmediateScore());
+    }
+
+    /**
+     * @return All possible selections in this board.
+     */
+    public Set<SelectionModel> getPossibleSelections() {
+//        System.out.println("--------------------------------------");
 
         HashSet<SelectionModel> possibleSelections = new HashSet<SelectionModel>();
 
@@ -113,22 +172,6 @@ public class BoardModel {
             }
         }
 
-//        System.out.println("Found: " + possibleSelections.size() + " paris.");
-//        for (SelectionModel selModel : possibleSelections) {
-//            System.out.println(selModel);
-//        }
-
-
-        // Display a random pair: (just for testing)
-//        int i = new Random().nextInt(possibleSelections.size());
-//        int j = 0;
-//        for (SelectionModel selModel : possibleSelections) {
-//            if (i == j) {
-//                setSelectionModel(selModel);
-//                break;
-//            }
-//            j++;
-//        }
 
 
         ArrayDeque<SelectionModel> selectionsToTest = new ArrayDeque<SelectionModel>();
@@ -182,21 +225,22 @@ public class BoardModel {
         }
 
 //        System.out.println("--------------------------------------");
-        System.out.println("Total number of possible selections: " + possibleSelections.size());
-        int maxScore = 0;
-        SelectionModel bestSelection = null;
-        for (SelectionModel selModel : possibleSelections) {
-            if (selModel.getImmediateScore() > maxScore) {
-                maxScore = selModel.getImmediateScore();
-                bestSelection = selModel;
-            }
-        }
-        selectionModel = bestSelection;
+//        System.out.println("Total number of possible selections: " + possibleSelections.size());
+//        int maxScore = 0;
+//        SelectionModel bestSelection = null;
+//        for (SelectionModel selModel : possibleSelections) {
+//            if (selModel.getImmediateScore() > maxScore) {
+//                maxScore = selModel.getImmediateScore();
+//                bestSelection = selModel;
+//            }
+//        }
 
-        System.out.println("Best selection score: " + maxScore);
+//        selectionModel = bestSelection;
+
+//        System.out.println("Best selection score: " + maxScore);
 
 
-
+        return possibleSelections;
 
     }
 
@@ -267,7 +311,8 @@ public class BoardModel {
         copy.setDotModels(this.dotModels);
         copy.setDotModels(copyDotModels);
         ArrayList<DotModel> copySelectedDots = new ArrayList<DotModel>();
-        copySelectedDots.addAll(this.selectionModel.getSelectedDots());
+        if (this.selectionModel != null)
+            copySelectedDots.addAll(this.selectionModel.getSelectedDots());
         SelectionModel copySelectionModel = new SelectionModel(copy, copySelectedDots);
         copy.setSelectionModel(copySelectionModel);
         return copy;

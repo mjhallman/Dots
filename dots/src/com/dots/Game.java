@@ -131,7 +131,7 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 
 //            System.out.println("run");
         } else if (event.getSource() == findBestMoveButton) {
-            boardPanel.getBoardModel().updateSelection();
+            boardPanel.getBoardModel().updateSelection(1);
             repaint();
         } else if (event.getSource() == loadExample1Button) {
             boardPanel.setBoardModel(ExampleBoards.getExample1());
@@ -140,8 +140,9 @@ public class Game extends JFrame implements ActionListener, MouseListener {
             boardPanel.setBoardModel(ExampleBoards.getExample2());
             repaint();
         } else if (event.getSource() == loadExample4Button) {
-            boardPanel.setBoardModel(ExampleBoards.getExample5());
-            repaint();
+//            boardPanel.setBoardModel(ExampleBoards.getExample5());
+//            repaint();
+            boardPanel.getBoardModel().updateSelection(1);
         }
     }
 
