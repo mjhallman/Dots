@@ -18,7 +18,7 @@ public class DotFactory {
         return new DotModel(x, y, getRandomColor());
     }
 
-    private static Color getRandomColor() {
+    public static Color getRandomColor() {
         Random r = new Random();
 
         int c = r.nextInt(5);

@@ -10,6 +10,7 @@ import java.util.Set;
  * Created with IntelliJ IDEA.
  * User: matthallman
  * Date: 9/24/13
+ *
  * Time: 2:22 PM
  * To change this template use File | Settings | File Templates.
  */
@@ -137,7 +138,7 @@ public class BoardModel {
                 if ( (selModel.getImmediateScore() + nextScore) > bestScoreFound ) {
                     bestScoreFound = selModel.getImmediateScore() + nextScore;
                     bestSelectionModelFound = selModel;
-                    System.out.println("Found better total score: " + bestScoreFound + "  --  {" + selModel.getImmediateScore() + ", " + nextScore + "}" + "  --  Next Selection: " + bm.getSelectionModel().toString());
+//                    System.out.println("Found better total score: " + bestScoreFound + "  --  {" + selModel.getImmediateScore() + ", " + nextScore + "}" + "  --  Next Selection: " + bm.getSelectionModel().toString());
                 }
 
             }
@@ -416,6 +417,18 @@ public class BoardModel {
             }
         }
         return equal;
+    }
+
+    /**
+     * Fills in the all null dots with a random color.
+     */
+    public void fillInNullDots() {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (getDot(i, j) == null)
+                    setDot(new DotModel(i, j, DotFactory.getRandomColor()));
+            }
+        }
     }
 
 

@@ -29,15 +29,20 @@ public class Game extends JFrame implements ActionListener, MouseListener {
     JButton resetButton;
     JButton changeButton;
     JButton runButton;
-    JButton findBestMoveButton;
+    JButton findBestMoveWithLookaheadButton;
+    JButton findBestMoveNoLookaheadButton;
     JButton loadExample1Button;
     JButton loadExample2Button;
     JButton loadExample4Button;
+    JButton fillInDotsButton;
+    JButton runSimulationNoLookaheadButton;
+    JButton runSimulationWithLookaheadButton;
+
 
     JLabel compModeLabel;
     JLabel runModeLabel;
 
-    private int editColor = 0;
+    private int editColor = 1;
     private int compMode = 0;
     private int xval, yval;
     private int selectedColorFlag = 0;
@@ -46,7 +51,6 @@ public class Game extends JFrame implements ActionListener, MouseListener {
     MouseListener mouseListener;
 
     public Game() {
-
         setSize(500, 500);
         setTitle("Dots");
 
@@ -61,20 +65,29 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         resetButton = new JButton("Reset");    //create buttons
         runButton = new JButton("Run");
         changeButton = new JButton("Change");
-        findBestMoveButton = new JButton("Find Best Move");
-        loadExample1Button = new JButton("Example 1");
-        loadExample2Button = new JButton("Example 2");
-        loadExample4Button = new JButton("Example 4");
+        findBestMoveWithLookaheadButton = new JButton("<html>Find Best Move<br />with lookahead</html>");
+        findBestMoveNoLookaheadButton = new JButton("<html>Find Best Move<br />no lookahead</html>");
+
+        fillInDotsButton = new JButton("Fill in empty dots");
+        runSimulationNoLookaheadButton = new JButton("<html>Run Simulation<br />no lookahead</html>");
+        runSimulationWithLookaheadButton = new JButton("<html>Run Simulation<br />with lookahead</html>");
+
+//        loadExample1Button = new JButton("Example 1");
+        loadExample2Button = new JButton("Load Example");
+//        loadExample4Button = new JButton("Example 4");
 
         compModeLabel = new JLabel("User is playing");
 
         buttonPanel.add(resetButton);   //add buttons to panel
-        buttonPanel.add(findBestMoveButton);
+        buttonPanel.add(findBestMoveWithLookaheadButton);
+        buttonPanel.add(findBestMoveNoLookaheadButton);
         buttonPanel.add(runButton);
-        buttonPanel.add(changeButton);
-        buttonPanel.add(loadExample1Button);
+//        buttonPanel.add(changeButton);
+//        buttonPanel.add(loadExample1Button);
         buttonPanel.add(loadExample2Button);
-        buttonPanel.add(loadExample4Button);
+        buttonPanel.add(fillInDotsButton);
+        buttonPanel.add(runSimulationNoLookaheadButton);
+        buttonPanel.add(runSimulationWithLookaheadButton);
 
         buttonPanel.setBackground(Color.black);
 
@@ -87,11 +100,13 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 //        buttonPanel.add(changeButton);
         runButton.addActionListener(this);
 //        buttonPanel.add(runButton);
-        findBestMoveButton.addActionListener(this);
-        loadExample1Button.addActionListener(this);
+        findBestMoveWithLookaheadButton.addActionListener(this);
+        findBestMoveNoLookaheadButton.addActionListener(this);
+//        loadExample1Button.addActionListener(this);
         loadExample2Button.addActionListener(this);
-        loadExample4Button.addActionListener(this);
-
+        fillInDotsButton.addActionListener(this);
+        runSimulationWithLookaheadButton.addActionListener(this);
+        runSimulationNoLookaheadButton.addActionListener(this);
         boardPanel.addMouseListener(this);   //add mouse listener
 
 
@@ -124,8 +139,11 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 
 
 //            System.out.println("run");
-        } else if (event.getSource() == findBestMoveButton) {
+        } else if (event.getSource() == findBestMoveWithLookaheadButton) {
             boardPanel.getBoardModel().updateSelection(1);
+            repaint();
+        } else if (event.getSource() == findBestMoveNoLookaheadButton) {
+            boardPanel.getBoardModel().updateSelection(0);
             repaint();
         } else if (event.getSource() == loadExample1Button) {
             boardPanel.setBoardModel(ExampleBoards.getExample1());
@@ -137,6 +155,43 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 //            boardPanel.setBoardModel(ExampleBoards.getExample5());
 //            repaint();
             boardPanel.getBoardModel().updateSelection(1);
+        } else if (event.getSource() == fillInDotsButton) {
+            boardPanel.getBoardModel().fillInNullDots();
+            repaint();
+        } else if (event.getSource() == runSimulationNoLookaheadButton) {
+            boardPanel.setBoardModel(new BoardModel(boardPanel));
+            repaint();
+            // Simulate 30 moves:
+            int totalScore = 0;
+            for (int i = 1; i <= 30; i++) {
+                boardPanel.getBoardModel().updateSelection(0);
+                totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+                boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
+                boardPanel.getBoardModel().fillInNullDots();
+                boardPanel.getBoardModel().setSelectionModel(null);
+                repaint();
+                System.out.println("Executed " + i + " moves.  -- Score: " + totalScore);
+            }
+            System.out.println("Finished executing simulation with no lookahead. Total score: " + totalScore);
+
+        } else if (event.getSource() == runSimulationWithLookaheadButton) {
+            int totalScore = 0;
+            for (int i = 1; i < 30; i++) {
+                boardPanel.getBoardModel().updateSelection(1);
+                totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+                boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
+                boardPanel.getBoardModel().fillInNullDots();
+                repaint();
+                System.out.println("Executed " + i + " moves.  -- Score: " + totalScore);
+
+            }
+            // The last move should not lookahead.
+            boardPanel.getBoardModel().updateSelection(0);
+            totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+            boardPanel.getBoardModel().fillInNullDots();
+            boardPanel.getBoardModel().setSelectionModel(null);
+            repaint();
+            System.out.println("Finished executing simulation with lookahead. Total score: " + totalScore);
         }
     }
 
@@ -154,25 +209,25 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         } else {
         }
 
-        if(compMode == 0){
-            if(selectedColorFlag == 0) {           //if no selection color has been specified
-                selectionColor = clickedDot.getColor();         //set the selection color
-                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
-                selectedColorFlag = 1;
-                //todo add dot to arrayList
-            } else {
-                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
-                    System.out.println("same color");
-                    //check if the dot is a possible move
-                    //add dot to selected dots
-
-                }
-            }
-            repaint();
-        } else {
-
-            //runs the program to decide on a move
-        }
+//        if(compMode == 0){
+//            if(selectedColorFlag == 0) {           //if no selection color has been specified
+//                selectionColor = clickedDot.getColor();         //set the selection color
+//                currentBoard.selectColor(xval,yval,clickedDot); //change the dots color to the "selected" color
+//                selectedColorFlag = 1;
+//                //todo add dot to arrayList
+//            } else {
+//                if(selectionColor == clickedDot.getColor()) { //if clicked dot is the same as the selection color
+//                    System.out.println("same color");
+//                    //check if the dot is a possible move
+//                    //add dot to selected dots
+//
+//                }
+//            }
+//            repaint();
+//        } else {
+//
+//            //runs the program to decide on a move
+//        }
 
 
 
