@@ -118,8 +118,8 @@ public class BoardModel {
      * Sets the SelectionModel to the best move to make.
      * @param numForwardStates The number of forward states to look forward.
      */
-    public void updateSelection(int numForwardStates) {
-        System.out.println("--------------------------------------");
+    public void updateSelection(int numForwardStates) throws Exception {
+//        System.out.println("--------------------------------------");
         Set<SelectionModel> possibleSelections = getPossibleSelections();
 
         if (numForwardStates == 0) {
@@ -128,7 +128,12 @@ public class BoardModel {
         else {
             int bestScoreFound = 0;
             SelectionModel bestSelectionModelFound = null;
+            long start = System.currentTimeMillis();
+            long end = start + 10 * 1000;
             for (SelectionModel selModel : possibleSelections) {
+                if (start > end) {
+                    throw new Exception("Taking too much time... Exiting!");
+                }
                 BoardModel bm = copy();
                 bm.setSelectionModel(selModel);
                 bm = bm.getNextState();

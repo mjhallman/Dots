@@ -11,7 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +21,8 @@ import java.awt.Color;
  * To change this template use File | Settings | File Templates.
  */
 public class Game extends JFrame implements ActionListener, MouseListener {
+
+    private int NUM_SIMULATIONS_TO_RUN = 1000;
 
     JPanel buttonPanel;
     BoardPanel boardPanel;
@@ -69,8 +71,8 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         findBestMoveNoLookaheadButton = new JButton("<html>Find Best Move<br />no lookahead</html>");
 
         fillInDotsButton = new JButton("Fill in empty dots");
-        runSimulationNoLookaheadButton = new JButton("<html>Run Simulation<br />no lookahead</html>");
-        runSimulationWithLookaheadButton = new JButton("<html>Run Simulation<br />with lookahead</html>");
+        runSimulationNoLookaheadButton = new JButton("<html>Run Simulations<br />no lookahead</html>");
+        runSimulationWithLookaheadButton = new JButton("<html>Run Simulations<br />with lookahead</html>");
 
 //        loadExample1Button = new JButton("Example 1");
         loadExample2Button = new JButton("Load Example");
@@ -140,10 +142,18 @@ public class Game extends JFrame implements ActionListener, MouseListener {
 
 //            System.out.println("run");
         } else if (event.getSource() == findBestMoveWithLookaheadButton) {
-            boardPanel.getBoardModel().updateSelection(1);
+            try {
+                boardPanel.getBoardModel().updateSelection(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             repaint();
         } else if (event.getSource() == findBestMoveNoLookaheadButton) {
-            boardPanel.getBoardModel().updateSelection(0);
+            try {
+                boardPanel.getBoardModel().updateSelection(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             repaint();
         } else if (event.getSource() == loadExample1Button) {
             boardPanel.setBoardModel(ExampleBoards.getExample1());
@@ -154,45 +164,91 @@ public class Game extends JFrame implements ActionListener, MouseListener {
         } else if (event.getSource() == loadExample4Button) {
 //            boardPanel.setBoardModel(ExampleBoards.getExample5());
 //            repaint();
-            boardPanel.getBoardModel().updateSelection(1);
+            try {
+                boardPanel.getBoardModel().updateSelection(1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else if (event.getSource() == fillInDotsButton) {
             boardPanel.getBoardModel().fillInNullDots();
             repaint();
         } else if (event.getSource() == runSimulationNoLookaheadButton) {
-            boardPanel.setBoardModel(new BoardModel(boardPanel));
-            repaint();
-            // Simulate 30 moves:
-            int totalScore = 0;
-            for (int i = 1; i <= 30; i++) {
-                boardPanel.getBoardModel().updateSelection(0);
-                totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
-                boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
-                boardPanel.getBoardModel().fillInNullDots();
-                boardPanel.getBoardModel().setSelectionModel(null);
-                repaint();
-                System.out.println("Executed " + i + " moves.  -- Score: " + totalScore);
+
+            ArrayList<Integer> scores = new ArrayList<Integer>();
+
+            for (int i = 0; i < NUM_SIMULATIONS_TO_RUN; i++) {
+
+                try {
+                    boardPanel.setBoardModel(new BoardModel(boardPanel));
+                    repaint();
+
+                    int totalScore = 0;
+                    for (int j = 1; j <= 30; j++) {
+                        boardPanel.getBoardModel().updateSelection(0);
+                        totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+                        boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
+                        boardPanel.getBoardModel().fillInNullDots();
+                        boardPanel.getBoardModel().setSelectionModel(null);
+                        repaint();
+    //                    System.out.println("Executed " + j + " moves.  -- Score: " + totalScore);
+                    }
+                    System.out.println("Finished executing simulation with no lookahead. Total score: " + totalScore);
+                    scores.add(totalScore);
+
+                } catch (Exception e) {
+                    System.err.println("Error in this trial. Ignoring.");
+                }
             }
-            System.out.println("Finished executing simulation with no lookahead. Total score: " + totalScore);
+
+            System.out.println("Finished executing " + NUM_SIMULATIONS_TO_RUN + "simulations. Overall average: " + getAverage(scores));
+
 
         } else if (event.getSource() == runSimulationWithLookaheadButton) {
-            int totalScore = 0;
-            for (int i = 1; i < 30; i++) {
-                boardPanel.getBoardModel().updateSelection(1);
-                totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
-                boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
-                boardPanel.getBoardModel().fillInNullDots();
-                repaint();
-                System.out.println("Executed " + i + " moves.  -- Score: " + totalScore);
 
+            ArrayList<Integer> scores = new ArrayList<Integer>();
+            for (int i = 0; i < NUM_SIMULATIONS_TO_RUN; i++) {
+                try {
+                    // Limit the execution time to 10 seconds:
+                    long start = System.currentTimeMillis();
+                    long end = start + 10 * 1000;
+                    boardPanel.setBoardModel(new BoardModel(boardPanel));
+                    repaint();
+                    int totalScore = 0;
+                    for (int j = 1; j < 30; j++) {
+                        if (start > end) {
+                            throw new Exception("Taking too much time... Exiting!");
+                        }
+                                boardPanel.getBoardModel().updateSelection(1);
+                        totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+                        boardPanel.setBoardModel(boardPanel.getBoardModel().getNextState());
+                        boardPanel.getBoardModel().fillInNullDots();
+                        repaint();
+                    }
+                    // The last move should not lookahead.
+                    boardPanel.getBoardModel().updateSelection(0);
+                    totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
+                    boardPanel.getBoardModel().fillInNullDots();
+                    boardPanel.getBoardModel().setSelectionModel(null);
+                    repaint();
+                    scores.add(totalScore);
+                    System.out.println("Finished executing simulation with lookahead. Total score: " + totalScore + "  -- Average so far: " + getAverage(scores));
+
+                } catch (Exception e) {
+//                    e.printStackTrace();
+                    System.err.println("Error in this trial. Ignoring.");
+                }
             }
-            // The last move should not lookahead.
-            boardPanel.getBoardModel().updateSelection(0);
-            totalScore += boardPanel.getBoardModel().getSelectionModel().getImmediateScore();
-            boardPanel.getBoardModel().fillInNullDots();
-            boardPanel.getBoardModel().setSelectionModel(null);
-            repaint();
-            System.out.println("Finished executing simulation with lookahead. Total score: " + totalScore);
+
+            System.out.println("Finished executing " + NUM_SIMULATIONS_TO_RUN + "simulations. Overall average: " + getAverage(scores));
         }
+    }
+
+    private double getAverage(ArrayList<Integer> scores) {
+        int sum = 0;
+        for (Integer i : scores) {
+            sum += i;
+        }
+        return sum / scores.size();
     }
 
     @Override
